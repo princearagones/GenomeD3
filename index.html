@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <title>GenomeD3Plot Circularplot Example</title>
-    <script src="d3/d3.min.js"></script>
+    <script src="d3/d3.js"></script>
     <script src="d3/d3-tip.js"></script>
     <style>
       body {
@@ -71,7 +71,6 @@
     <script type="text/javascript" src="http://bl.ocks.org/lairdm/raw/bdd7410698e06970a9ff/canvg.js"></script>
     <script type="text/javascript" src="http://bl.ocks.org/lairdm/raw/bdd7410698e06970a9ff/FileSaver.js"></script>
 
-
     <!-- Circular plot library -->
     <script type="text/javascript" src="circularplot.js"></script>
 
@@ -80,8 +79,34 @@
     <script type="text/javascript" src="circularsample.js"></script>
 
 
-    </script>
+    <script type="text/javascript" src="d3/d3.layout.js"></script>
+    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="newpackage.js"></script>
 
+    <script>
+      var splines = [];
+
+      var bundle = d3.layout.bundle();
+
+      var line = d3.svg.line.radial()
+          .interpolate("bundle")
+          .tension(.85)
+          .radius(function(d) { return d.y; })
+          .angle(function(d) { return d.x / 180 * Math.PI; });
+
+      var links = packages.imports(tracks[0].items);
+
+          //splines = bundle(links);
+      console.log(links);
+      //console.log(splines);
+      var svg = d3.select("svg");
+      var path = svg.selectAll("path.link")
+          .data(links)
+          .enter().append("svg:path")
+          .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
+          .attr("d", function(d, i) { return line(links); });
+
+    </script>
     <!-- Controls on the demo -->
     <div id="demo-controls">
 

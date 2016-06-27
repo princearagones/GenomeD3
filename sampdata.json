@@ -1,16 +1,5 @@
-
-	  [{
-    "trackName": "track2",
-		"visible": true,
-		"trackType": "stranded",
-		"inner_radius": 190,
-		"outer_radius": 240,
-		"centre_line_stroke": "grey",
-		"showLabels": true,
-		"showTooltip": true,
-    "chrlen":[43270923,35937250,36413819,35502694,29958434,31248787,29697621,28443022,23012720,23207287,29021106,27531856],
-		"items": [
-{"chr": 1, "id": 1, "start":483, "end":2027, "name":"PA0001", "strand":1, "imports":["PA0002","PA0003","PA00011"]},
+[
+{"chr": 1, "id": 1, "start":483, "end":2027, "name":"PA0001", "strand":1, "imports":["PA0002","PA0003","PA0011"]},
 {"chr": 1, "id": 2, "start":2056, "end":3159, "name":"PA0002", "strand":1},
 {"chr": 1, "id": 3, "start":3169, "end":4278, "name":"PA0003", "strand":1},
 {"chr": 1, "id": 4, "start":4275, "end":6695, "name":"PA0004", "strand":1},
@@ -5582,5 +5571,3 @@
 {"chr": 1, "id": 5570, "start":6263805, "end":6264212, "name":"PA5569", "strand":-1},
 {"chr": 1, "id": 5571, "start":6264227, "end":6264361, "name":"PA5570", "strand":-1},
 {"chr": 2, "id": 5572, "start":7803, "end":8339, "name":"PA5571", "strand":-1}]
-    }
-    ]

@@ -8,9 +8,20 @@
 var request = new XMLHttpRequest();
 request.open("GET", "sampdata.json",false);
 request.send(null)
-var tracks = JSON.parse(request.responseText);
+var tracks1 = JSON.parse(request.responseText);
 
+var tracks =[{
+trackName: "track2",
+visible: true,
+trackType: "stranded",
+inner_radius: 190,
+outer_radius: 240,
+centre_line_stroke: "grey",
+showLabels: true,
+showTooltip: true
+}]
 
+tracks[0].items = tracks1;
 
 var chromtracks = {
 	trackName: "track1",
@@ -28,26 +39,27 @@ var chromtracks = {
 	showTooltip: true,
 	genomesize: 373245519,
 	linear_mouseclick: "linearClick",
-	items: [
+	items: [ //these are real data of the length of each chromosome of a rice, incrementing from previous lengths
 								 {id: 1, start:0, end:43270923, name:"Chromosome 1", strand: -1},
 								 {id: 2, start:43270923, end:79208173, name:"Chromosome 2", strand: -1},
 								 {id: 3, start:79208173, end:115621992, name:"Chromosome 3", strand: -1},
 								 {id: 4, start:115621992, end:151124686, name:"Chromosome 4", strand: -1},
 								 {id: 5, start:151124686, end:181083120, name:"Chromosome 5", strand: -1},
-								 {id: 6, start:181083120, end:212331907, name:"Chromosome 6", strand: -1, extraclass: "cellwall"},
-								 {id: 7, start:212331907, end:242029528, name:"Chromosome 7", strand: -1, extraclass: "innermembrane"},
-								 {id: 8, start:242029528, end:270472550, name:"Chromosome 8", strand: -1, extraclass: "cellwall"},
-								 {id: 9, start:270472550, end:293485270, name:"Chromosome 9", strand: -1, extraclass: "innermembrane"},
-								 {id: 10, start:293485270, end:316692557, name:"Chromosome 10", strand: -1, extraclass: "extracelluar"},
-								 {id: 11, start:316692557, end:345713663, name:"Chromosome 11", strand: -1, extraclass: "outermembrane"},
-								 {id: 12, start:345713663, end:373245519, name:"Chromosome 12", strand: -1, extraclass: "innermembrane"}
-]
+								 {id: 6, start:181083120, end:212331907, name:"Chromosome 6", strand: -1,},
+								 {id: 7, start:212331907, end:242029528, name:"Chromosome 7", strand: -1 },
+								 {id: 8, start:242029528, end:270472550, name:"Chromosome 8", strand: -1},
+								 {id: 9, start:270472550, end:293485270, name:"Chromosome 9", strand: -1 },
+								 {id: 10, start:293485270, end:316692557, name:"Chromosome 10", strand: -1},
+								 {id: 11, start:316692557, end:345713663, name:"Chromosome 11", strand: -1},
+								 {id: 12, start:345713663, end:373245519, name:"Chromosome 12", strand: -1}]
 }
 tracks.push(chromtracks);
 
 tracks[0].items.forEach(function(tr){
 	tr.start += chromtracks.items[tr.chr-1].start;
 	tr.end += chromtracks.items[tr.chr-1].start;
+	tr.siza = tr.end - tr.start;
+	tr.parent = null;
 });
 
 var genomesize = tracks[1].genomesize;
@@ -69,7 +81,7 @@ var circularlayout = {genomesize: genomesize,
 
 
 var cTrack = new circularTrack(circularlayout, tracks);
-console.log(cTrack);
+//console.log(cTrack);
 // Attached to the resize plot button, call the plot to
 // resize the plot to 650px diameter
 function resizePlot() {

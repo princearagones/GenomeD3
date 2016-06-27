@@ -15,7 +15,26 @@ var circularTrackDefaults = {
     dragresize: true,
     movecursor: false
 }
-var hue = d3.scale.category20b();
+
+var hue = d3.scale.category20();
+var luminance = d3.scale.sqrt()
+    .domain([0, 1e6])
+    .clamp(true)
+    .range([90, 20]);
+
+
+function fill(d) {
+    if(d.name.split(" ")[0]!="Chromosome") return;
+    var p = d;
+    //if(p.type == undefined) {
+      //while (p.depth > 1) p = p.parent;
+      var c = d3.lab(hue(p.name));
+    //  c.l = luminance(d.sum);
+    //}
+    //console.log(d,d.name,c);
+    return c;
+}
+
 function circularTrack(layout,tracks) {
 
     this.tracks = tracks;
@@ -107,7 +126,7 @@ function circularTrack(layout,tracks) {
 	.attr('orient', 'auto')
 	.append('svg:path')
 	.attr('d', 'M10,-5L0,0L10,5')
-	.attr('class', "move-cross");
+	.attr('class', "move-cross")
 	//    .attr('fill', '#000');
 
     // Display the dragging cross if needed
@@ -502,10 +521,7 @@ circularTrack.prototype.removePlot = function(i) {
 
 ////////////////////////////////////////////////
 //
-// Track type tracks (as blocks without strands)
-//
-////////////////////////////////////////////////
-
+// Track type tracks (as blocks without strands)fill(d)
 circularTrack.prototype.drawTrack = function(i, animate) {
     var g = this.g;
     var cfg = this.layout;
@@ -538,7 +554,8 @@ circularTrack.prototype.drawTrack = function(i, animate) {
 	    } else {
 		return cfg.radians_pre_bp*d.end;
 	    }
-	});
+	})
+
 
     // Draw the track, putting in elements such as hover colour change
     // if one exists, click events, etc
@@ -547,6 +564,7 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     .enter()
     .append("path")
     .attr("d", arc)
+    .style("fill", function(d) { return fill(d) })
     .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '') + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '') })
     .attr("transform", "translate("+cfg.w2+","+cfg.h2+")")
     .on("click", function(d,i) {
@@ -591,7 +609,8 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     	    } else {
 		return null;
 	    }
-    	});
+	})
+
 
     // If we're doing an animated addition, move the track out to its
     // new spot
@@ -606,6 +625,7 @@ circularTrack.prototype.drawTrack = function(i, animate) {
 
     this.tracks[i].visible = true;
 }
+
 
 circularTrack.prototype.moveTrack = function(i, innerRadius, outerRadius) {
     var g = this.g;
