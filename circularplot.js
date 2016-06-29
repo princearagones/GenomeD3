@@ -24,7 +24,7 @@ var luminance = d3.scale.sqrt()
 
 
 function fill(d) {
-    if(d.name.split(" ")[0]!="Chromosome") return;
+    if(d.type!="Chromosome") return;
     var p = d;
     //if(p.type == undefined) {
       //while (p.depth > 1) p = p.parent;
@@ -72,7 +72,6 @@ function circularTrack(layout,tracks) {
 	.domain([0, layout.genomesize]);
     var xScale = this.xScale;
     d3.select(layout.container).select("svg").remove();
-
     this.container = d3.select(layout.container)
 	.append("svg")
 	.attr("id", function() { return layout.container.slice(1) + "_svg"; })
@@ -299,8 +298,8 @@ circularTrack.prototype.drawAxis = function() {
     .attr("class", "axis");
 
     axis.append("line")
-    .attr("x1", function(d, i){return cfg.w2 + (190*Math.cos((d*cfg.radians_pre_bp)-cfg.PI2));})
-    .attr("y1", function(d, i){return cfg.h2 + (190*Math.sin((d*cfg.radians_pre_bp)-cfg.PI2));})
+    .attr("x1", function(d, i){return cfg.w2 + (260*Math.cos((d*cfg.radians_pre_bp)-cfg.PI2));})
+    .attr("y1", function(d, i){return cfg.h2 + (260*Math.sin((d*cfg.radians_pre_bp)-cfg.PI2));})
     .attr("x2", function(d, i){return cfg.w2 + (cfg.radius*Math.cos((d*cfg.radians_pre_bp)-cfg.PI2));})
     .attr("y2", function(d, i){return cfg.h2 + (cfg.radius*Math.sin((d*cfg.radians_pre_bp)-cfg.PI2));})
     .attr("class", "line")
@@ -565,7 +564,7 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     .append("path")
     .attr("d", arc)
     .style("fill", function(d) { return fill(d) })
-    .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '') + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '') })
+    .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '')+ ('undefined' !== typeof d.extraclass ? d.extraclass : '')+ ('undefined' !== typeof d.type ? ('_'+d.type) : '')})
     .attr("transform", "translate("+cfg.w2+","+cfg.h2+")")
     .on("click", function(d,i) {
 	    if('undefined' !== typeof track.mouseclick) {

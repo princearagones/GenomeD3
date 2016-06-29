@@ -116,9 +116,49 @@
 
 /* Track 2 is also a stranded track, give it
    a different set of colours */
-.track2_pos {
+
+
+/*.track2_pos {
     fill: #000099;
     fill-opacity: .7;
+}*/
+
+.track2_pos_INS {
+    fill: blue;
+    fill-opacity: 0.05;
+}
+.track2_pos_INV {
+    fill: red;
+    fill-opacity: 0.05;
+}
+
+.track2_pos_DEL {
+    fill: black;
+    fill-opacity: 0.05;
+}
+
+.track2_pos_DUP {
+    fill: green;
+    fill-opacity: 0.05;
+}
+
+.track2_neg_INS {
+    fill: blue;
+    fill-opacity: 0.05;
+}
+.track2_neg_INV {
+    fill: red;
+    fill-opacity: 0.05;
+}
+
+.track2_neg_DEL {
+    fill: black;
+    fill-opacity: 0.05;
+}
+
+.track2_neg_DUP {
+    fill: green;
+    fill-opacity: 0.05;
 }
 
 /* When a linear track is zoomed to the point
@@ -133,6 +173,8 @@
     fill: #006600;
     fill-opacity: .7;
 }
+
+
 
 .track2_neg_zoomed {
     stroke-width: 1px;

@@ -7,11 +7,13 @@
 
       function find(name, data) {
         var node = map[name], i;
+
         if (!node) {
           node = map[name] = data || {name: name, children: []};
           if (name.length) {
-            node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
-            node.parent.children.push(node);
+             node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
+             node.parent.children.push(node);
+          //  console.log(node.parent);
             node.key = name.substring(i + 1);
           }
         }

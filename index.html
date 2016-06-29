@@ -6,17 +6,29 @@
     <script src="d3/d3.js"></script>
     <script src="d3/d3-tip.js"></script>
     <style>
-      body {
-        margin: 0;
-        font-size: 14px;
-        font-family: "Helvetica Neue", Helvetica;
-      }
+    body {
+     margin: 0;
+     font-size: 14px;
+     font-family: "Helvetica Neue", Helvetica;
+   }
 
-      #circularchart {
-        position: absolute;
-        top: 0px;
-        left: 125px;
-      }
+   #linearchart {
+     position: absolute;
+     top: 950px;
+     left: 10px;
+   }
+
+   #brush {
+     position: absolute;
+     top: 1200px;
+     left: 250px;
+   }
+
+   #circularchart {
+     position: absolute;
+     top: 0px;
+     left: 125px;
+   }
       path.arc {
         cursor: move;
         fill: #fff;
@@ -59,11 +71,33 @@
       }
     </style>
     <link href="tracks.css" rel="stylesheet">
+    <script src="readinput.js"></script>
+    <script>
+    var tracks =[{
+    trackName: "track2",
+    visible: true,
+    trackType: "stranded",
+    inner_radius: 315,
+    outer_radius: 365,
+    centre_line_stroke: "grey",
+    showLabels: true,
+    showTooltip: true
+    }]
+
+    // var request = new XMLHttpRequest();
+    // request.open("GET", "sampdata.json",false);
+    // request.send(null)
+    // var tracks1 = JSON.parse(request.responseText);
+
+    tracks[0].items = track;
+    </script>
   </head>
   <body>
-    <div id="plotbody">
-      <!-- The container that will hold the SVG of the plot -->
+    <div id="body">
+      <!-- The containers that will hold the SVG of the plots -->
       <div id="circularchart"></div>
+      <div id="linearchart"></div>
+      <div id="brush"></div>
     </div>
 
     <!-- Libraries needed for save feature -->
@@ -73,17 +107,180 @@
 
     <!-- Circular plot library -->
     <script type="text/javascript" src="circularplot.js"></script>
+    <!-- Linear plot library -->
+    <!-- <script type="text/javascript" src="linearplot.js"></script> -->
 
-    <!-- Initialization code to initialize the plot, this is what you would write
-         and place in your application. -->
+     <!-- Linear brush library -->
+    <!-- <script type="text/javascript" src="linearbrush.js"></script> -->
+
+     <!-- Initialization code to initialize the plots, this is what you would write
+          and place in your application. Note, pulled from the linear and circular
+          plot demo Gists -->
+    <!-- <script type="text/javascript" src="lineardemo.js"></script> -->
     <script type="text/javascript" src="circularsample.js"></script>
 
 
-    <script type="text/javascript" src="d3/d3.layout.js"></script>
+    <script type="text/javascript" src="d3/d3.layout.mod.js"></script>
     <script type="text/javascript" src="d3/d3.js"></script>
-    <script type="text/javascript" src="newpackage.js"></script>
+    <script type="text/javascript" src="packages.js"></script>
+    <script type="text/javascript">
 
-    <script>
+    var w = 900,
+    h = 820,
+    rx = w / 2 +30,
+    ry = h / 2,
+    m0,
+    rotate = 0;
+
+    var splines = [];
+
+    var cluster = d3.layout.cluster()
+    .size([360, ry - 120])
+    //.sort(function(a, b) { return d3.ascending(a.key, b.key); });
+
+    var bundle = d3.layout.bundle();
+
+    var line = d3.svg.line.radial()
+    .interpolate("bundle")
+    .tension(.85)
+    .radius(function(d) { return d.y; })
+    .angle(function(d) { return d.x / 180 * Math.PI; });
+
+    // Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
+    // var div = d3.select("body").insert("div", "h2")
+    //  .style("top", "140px")
+    //  .style("left", "300px")
+    // //.style("width", w + "px")
+    // //.style("height", w-100 + "px")
+    // .style("position", "absolute")
+    // .style("-webkit-backface-visibility", "hidden");
+
+    var svg = d3.select("svg").append("svg:svg")
+    .attr("top", "140px")
+    .attr("width", w)
+    .attr("height", w)
+    .append("svg:g")
+    .attr("transform", "translate(" + rx + "," + (ry+20) + ")");
+
+    svg.append("svg:path")
+    .attr("class", "arc")
+    .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+    .on("mousedown", mousedown);
+
+    d3.json("sampdata.json", function(classes) {
+    var nodes = cluster.nodes(packages.root(classes)),
+      links = packages.imports(nodes),
+      splines = bundle(links);
+    //  console.log(splines);
+    //  console.log("nodes: +"nodes);
+    //  console.log("nodes: +"nodes)
+    //  console.log("nodes: +"nodes)
+    var path = svg.selectAll("path.link")
+      .data(links)
+      .enter().append("svg:path")
+      .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
+      .attr("d", function(d, i) { return line(splines[i]); });
+
+    svg.selectAll("g.node")
+      .data(nodes.filter(function(n) { return !n.children; }))
+    .enter().append("svg:g")
+      .attr("class", "node")
+      .attr("id", function(d) { return "node-" + d.key; })
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+    .append("svg:text")
+      .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+      .attr("dy", ".31em")
+      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+      .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+      .text(function(d) { return "|"; })
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
+    d3.select("input[type=range]").on("change", function() {
+    line.tension(this.value / 100);
+    path.attr("d", function(d, i) { return line(splines[i]); });
+    });
+    });
+
+    d3.select(window)
+    .on("mousemove", mousemove)
+    //.on("mouseup", mouseup);
+
+    function mouse(e) {
+    return [e.pageX - rx, e.pageY - ry];
+    }
+
+    function mousedown() {
+    m0 = mouse(d3.event);
+    d3.event.preventDefault();
+    }
+
+    function mousemove() {
+    if (m0) {
+    var m1 = mouse(d3.event),
+        dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI;
+    div.style("-webkit-transform", "translateY(" + (ry - rx) + "px)rotateZ(" + dm + "deg)translateY(" + (rx - ry) + "px)");
+    }
+    }
+
+    function mouseup() {
+    if (m0) {
+    var m1 = mouse(d3.event),
+        dm = Math.atan2(cross(m0, m1), dot(m0, m1)) * 180 / Math.PI;
+
+    rotate += dm;
+    if (rotate > 360) rotate -= 360;
+    else if (rotate < 0) rotate += 360;
+    m0 = null;
+
+    div.style("-webkit-transform", null);
+
+    svg
+        .attr("transform", "translate(" + rx + "," + ry + ")rotate(" + rotate + ")")
+      .selectAll("g.node text")
+        .attr("dx", function(d) { return (d.x + rotate) % 360 < 180 ? 8 : -8; })
+        .attr("text-anchor", function(d) { return (d.x + rotate) % 360 < 180 ? "start" : "end"; })
+        .attr("transform", function(d) { return (d.x + rotate) % 360 < 180 ? null : "rotate(180)"; });
+    }
+    }
+
+    function mouseover(d) {
+    svg.selectAll("path.link.target-" + d.key)
+      .classed("target", true)
+      .each(updateNodes("source", true));
+
+    svg.selectAll("path.link.source-" + d.key)
+      .classed("source", true)
+      .each(updateNodes("target", true));
+    }
+
+    function mouseout(d) {
+    svg.selectAll("path.link.source-" + d.key)
+      .classed("source", false)
+      .each(updateNodes("target", false));
+
+    svg.selectAll("path.link.target-" + d.key)
+      .classed("target", false)
+      .each(updateNodes("source", false));
+    }
+
+    function updateNodes(name, value) {
+    return function(d) {
+    if (value) this.parentNode.appendChild(this);
+    svg.select("#node-" + d[name].key).classed(name, value);
+    };
+    }
+
+    function cross(a, b) {
+    return a[0] * b[1] - a[1] * b[0];
+    }
+
+    function dot(a, b) {
+    return a[0] * b[0] + a[1] * b[1];
+    }
+
+    </script>
+    <!-- <script>
       var splines = [];
 
       var bundle = d3.layout.bundle();
@@ -91,28 +288,42 @@
       var line = d3.svg.line.radial()
           .interpolate("bundle")
           .tension(.85)
-          .radius(function(d) { return d.y; })
+          .radius(function(d) {console.log(d); return d.y; })
           .angle(function(d) { return d.x / 180 * Math.PI; });
 
       var links = packages.imports(tracks[0].items);
-
-          //splines = bundle(links);
-      console.log(links);
+        splines = bundle(links);
       //console.log(splines);
-      var svg = d3.select("svg");
+
+      var w = 1280,
+          h = 800,
+          rx = w / 2,
+          ry = h / 2,
+          m0,
+          rotate = 0;
+
+      var svg = d3.select("#circularchart")
+
+      svg.append("svg:path")
+          .attr("class", "arc")
+          .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI));
+
       var path = svg.selectAll("path.link")
           .data(links)
           .enter().append("svg:path")
           .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
-          .attr("d", function(d, i) { return line(links); });
+          .attr("d", function(d,i) {
+            if(splines[i] != null) {
+            console.log(i);
+            console.log(d);
+            return line(splines[i]);
+          }});
 
-    </script>
+
+    </script> -->
     <!-- Controls on the demo -->
     <div id="demo-controls">
-
       <div class="control-item"><button name="saveImage" onclick="saveImage(); return false">Save Image</button></div>
-
-      <div class="control-item"><input type="button" onClick="resizePlot(); return false;" value="Resize plot diameter"></button></div>
 
     </div>
 

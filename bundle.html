@@ -100,12 +100,13 @@ svg.append("svg:path")
     .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
     .on("mousedown", mousedown);
 
-d3.json("flare-imports.json", function(classes) {
+d3.json("sampdata.json", function(classes) {
   var nodes = cluster.nodes(packages.root(classes)),
       links = packages.imports(nodes),
       splines = bundle(links);
-      console.log(links);
-      console.log(splines);
+    console.log(nodes);
+    //  console.log(links);
+    //  console.log(splines);
     //  console.log("nodes: +"nodes);
     //  console.log("nodes: +"nodes)
     //  console.log("nodes: +"nodes)
