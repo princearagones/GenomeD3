@@ -70,8 +70,8 @@
         stroke: #2ca02c;
       }
     </style>
-    <link href="tracks.css" rel="stylesheet">
-    <script src="readinput.js"></script>
+    <link href="src/css/tracks.css" rel="stylesheet">
+    <script src="src/js/readinput.js"></script>
     <script>
     var tracks =[{
     trackName: "track2",
@@ -106,7 +106,7 @@
     <script type="text/javascript" src="http://bl.ocks.org/lairdm/raw/bdd7410698e06970a9ff/FileSaver.js"></script>
 
     <!-- Circular plot library -->
-    <script type="text/javascript" src="circularplot.js"></script>
+    <script type="text/javascript" src="src/js/circularplot.js"></script>
     <!-- Linear plot library -->
     <!-- <script type="text/javascript" src="linearplot.js"></script> -->
 
@@ -117,12 +117,12 @@
           and place in your application. Note, pulled from the linear and circular
           plot demo Gists -->
     <!-- <script type="text/javascript" src="lineardemo.js"></script> -->
-    <script type="text/javascript" src="circularsample.js"></script>
+    <script type="text/javascript" src="src/js/circularsample.js"></script>
 
 
     <script type="text/javascript" src="d3/d3.layout.mod.js"></script>
     <script type="text/javascript" src="d3/d3.js"></script>
-    <script type="text/javascript" src="packages.js"></script>
+    <script type="text/javascript" src="src/js/packages.js"></script>
     <script type="text/javascript">
 
     var w = 900,
@@ -167,7 +167,7 @@
     .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
     .on("mousedown", mousedown);
 
-    d3.json("sampdata.json", function(classes) {
+    d3.json("data/pseudo/tra.json", function(classes) {
     var nodes = cluster.nodes(packages.root(classes)),
       links = packages.imports(nodes),
       splines = bundle(links);

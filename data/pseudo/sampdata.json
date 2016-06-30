@@ -62,7 +62,7 @@
 {"chr": 1, "id": 61, "start":74279, "end":74716, "name":"PA0061", "strand":-1, "imports":[]},
 {"chr": 1, "id": 62, "start":74773, "end":75189, "name":"PA0062", "strand":-1, "imports":[]},
 {"chr": 1, "id": 63, "start":75281, "end":76408, "name":"PA0063", "strand":1, "imports":[]},
-{"chr": 1, "id": 64, "start":76416, "end":77399, "name":"PA0064", "strand":-1, "imports":[]},
+{"chr": 1, "id": 64, "start":76416, "end":77399, "name":"PA0064", "strand":-1, "imports":["PA0026"]},
 {"chr": 1, "id": 65, "start":77432, "end":78097, "name":"PA0065", "strand":-1, "imports":[]},
 {"chr": 1, "id": 66, "start":78090, "end":78632, "name":"PA0066", "strand":-1, "imports":[]},
 {"chr": 1, "id": 67, "start":78710, "end":80755, "name":"PA0067", "strand":1, "imports":[]},

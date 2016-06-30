@@ -1,9 +1,6 @@
 (function(){
 track = [];
-readFile("data/IRIS_313-15897.DEL", track);
-readFile("data/IRIS_313-15897.INSERT", track);
-readFile("data/IRIS_313-15897.DUP", track);
-readFile("data/IRIS_313-15897.INV", track);
+readFile("data/real/IRIS_313-15897.DEL", track);
 function readFile(file ,track){
   var rawFile = new XMLHttpRequest();
     rawFile.open("GET", file, false);
@@ -22,12 +19,13 @@ function readFile(file ,track){
                         obj.chr = parseInt(str[0].replace('chr',''));
                         obj.start = parseInt(str[1]);
                         obj.end = parseInt(str[2]);
+
                         obj.type = str[3];
                         obj.import = [];
                         obj.strand = 1;
                         obj.name = str[0]+'.'+str[1]+'.'+str[3];
                       }
-                      track.push(obj);
+                        track.push(obj);
                   }
                 });
                 console.log(track[0]);
