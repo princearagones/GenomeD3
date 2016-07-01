@@ -14,7 +14,7 @@ var chromtracks = {
 	inner_radius: 365,
 	outer_radius: 415,
 	trackFeatures: "complex",
-	featureThreshold: 7000000,
+	featureThreshold: 0,
 	mouseclick: "islandPopup",
 	mouseover_callback: "islandPopup",
 	mouseout_callback: "islandPopupClear",
@@ -39,13 +39,17 @@ var chromtracks = {
 }
 tracks.push(chromtracks);
 
-tracks[0].items.forEach(function(tr){
-	tr.start += chromtracks.items[tr.chr-1].start;
-	tr.end += chromtracks.items[tr.chr-1].start;
-	tr.size = tr.end - tr.start;
-});
 
-var genomesize = tracks[1].genomesize;
+for(i=0;i<tracks.length-1;i++){
+	tracks[i].items.forEach(function(tr){
+		tr.start += chromtracks.items[tr.chr-1].start;
+		tr.end += chromtracks.items[tr.chr-1].start;
+		tr.size = tr.end - tr.start;
+	});
+}
+
+
+var genomesize = 373245519;
 var circularlayout = {genomesize: genomesize,
 		      container: "#circularchart",
 		      dblclick: "doubleClick",
@@ -65,6 +69,60 @@ var circularlayout = {genomesize: genomesize,
 
 var cTrack = new circularTrack(circularlayout, tracks);
 //console.log(cTrack);
+
+if('undefined' !== typeof linearTrack) {
+    console.log("Attaching linear track");
+    cTrack.attachBrush(linearTrack);
+    cTrack.showBrush();
+}
+
+if('undefined' !== typeof brush) {
+    console.log("Attaching linear track brush");
+    cTrack.attachBrush(brush);
+}
+
+// Now some callbacks to make the interactive functionality work.
+
+// Attached to the onchange callback for the GC Plot checkbox,
+// call the plot to add/remove the GC Plot as needed
+function updateGC(cb) {
+    if(cb.checked) {
+	cTrack.showTrack("gcplot");
+    } else {
+	cTrack.hideTrack("gcplot");
+    }
+}
+
+// Attached to strand track checkbox, call the plot to
+// add/remove the inner stranded track
+function updateStrand(cb) {
+    if(cb.checked) {
+	cTrack.showTrack("track1");
+    } else {
+	cTrack.hideTrack("track1");
+    }
+}
+
+// Attached to the contig gap checkbox, call the plot to
+// add/remove the contig gap squiggles
+function updateGaps(cb) {
+    if(cb.checked) {
+	cTrack.showTrack("gapTrack");
+    } else {
+	cTrack.hideTrack("gapTrack");
+    }
+}
+
+// Attached to the ADB glyph checkbox, call the plot to
+// add/remove only the ADB type of glyph
+function updateAdb(cb) {
+    if(cb.checked) {
+	cTrack.showGlyphTrackType("track5", "adb");
+    } else {
+	cTrack.hideGlyphTrackType("track5", "adb");
+    }
+}
+
 // Attached to the resize plot button, call the plot to
 // resize the plot to 650px diameter
 function resizePlot() {

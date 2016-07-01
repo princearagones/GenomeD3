@@ -118,17 +118,17 @@
    a different set of colours */
 
 
-/*.track2_pos {
+.track2_pos {
     fill: #000099;
     fill-opacity: .7;
-}*/
+}
 
 .track2_pos_INS {
     fill: blue;
     fill-opacity: 0.05;
 }
 .track2_pos_INV {
-    fill: yellow;
+    fill: red;
     fill-opacity: 0.05;
 }
 
@@ -144,7 +144,7 @@
 
 .track2_neg_INS {
     fill: blue;
-    fill-opacity: 0.05;
+    fill-opacity: 0.5;
 }
 .track2_neg_INV {
     fill: red;

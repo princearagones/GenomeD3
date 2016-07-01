@@ -1,6 +1,6 @@
 [
 {"chr": 1, "id": 1, "start":483, "end":2027, "name":"PA0001", "strand":1, "imports":["PA5571"]},
-{"chr": 1, "id": 2, "start":2056, "end":3159, "name":"PA0002", "strand":1,"imports":["PA0002"]},
+{"chr": 1, "id": 2, "start":2056, "end":200000, "name":"PA0002", "strand":1,"imports":["PA0002"]},
 {"chr": 1, "id": 3, "start":3169, "end":4278, "name":"PA0003", "strand":1, "imports":["PA0004"]},
 {"chr": 1, "id": 4, "start":4275, "end":6695, "name":"PA0004", "strand":1, "imports":[]},
 {"chr": 1, "id": 5, "start":7018, "end":7791, "name":"PA0005", "strand":-1, "imports":[]},
@@ -176,6 +176,6 @@
 {"chr": 1, "id": 175, "start":198688, "end":199530, "name":"PA0175", "strand":-1, "imports":[]},
 {"chr": 1, "id": 176, "start":199600, "end":201639, "name":"PA0176", "strand":-1, "imports":[]},
 {"chr": 1, "id": 177, "start":201675, "end":202160, "name":"PA0177", "strand":-1, "imports":[]},
-{"chr": 2, "id": 5572, "start":7803, "end":1000000, "name":"PA5571", "strand":1, "imports":["PA5573"],"type": "DEL"},
+{"chr": 2, "id": 5571, "start":1000000, "end":1000000, "name":"PA5571", "strand":1, "imports":["PA5573"],"type": "DEL"},
 {"chr": 3, "id": 5572, "start":7803, "end":1000000, "name":"PA5572", "strand":1, "imports":[],"type": "INS"},
-{"chr": 4, "id": 5572, "start":7803, "end":1000000, "name":"PA5573", "strand":1, "imports":[],"type": "INV"}]
+{"chr": 4, "id": 5573, "start":7803, "end":1000000, "name":"PA5573", "strand":1, "imports":[],"type": "INV"}]

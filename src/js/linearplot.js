@@ -1,6 +1,6 @@
 var linearTrackDefaults = {
     width: 940,
-    height: 500,
+    height: 600,
     left_margin: 15,
     right_margin: 15,
     bottom_margin: 5,
@@ -28,7 +28,6 @@ function genomeTrack(layout,tracks) {
     if('undefined' == typeof layout.plotid) {
 	this.layout.plotid = layout.container.slice(1);
     }
-
     this.layout.containerid = layout.container.slice(1);
 
     this.layout.width_without_margins =
@@ -169,16 +168,20 @@ function genomeTrack(layout,tracks) {
 
 
     for(var i=0; i < this.tracks.length; i++) {
+    	console.log("para sa track number "+i);
+    	console.log(tracks[i].items);
 	// We're going to see what type of tracks we have
 	// and dispatch them appropriately
 
 	 if("undefined" !== typeof this.tracks[i].skipLinear
 	    &&  this.tracks[i].skipLinear == true) {
+	 	console.log("skip daw e");
 	     continue;
 	 }
 
 	 if("undefined" == typeof this.tracks[i].trackFeatures) {
 	     this.tracks[i].trackFeatures = "simple";
+	     console.log("simple lang si "+i);
 	 } else if(this.tracks[i].trackFeatures == "complex") {
 	     // We need to pre-calculate the stacking order for
 	     // all arrow type features
@@ -235,7 +238,6 @@ function genomeTrack(layout,tracks) {
 	 if("undefined" == typeof this.tracks[i].featureThreshold) {
 	     this.tracks[i].featureThreshold = this.genomesize;
 	 }
-
 	switch(this.tracks[i].trackType) {
 	case "gap":
 	    this.itemRects[i] = this.main.append("g")
@@ -354,14 +356,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 
     var stackNum = this.tracks[i].stackNum;
     //    console.log(visStart, visEnd);
-    var visItems = track.items.filter(function(d) {
-	    if(typeof d.feature !== 'undefined' && d.feature !== 'gene') {
-		if(track.featureThreshold < visRange) {
-		    return false;
-		}
-	    }
-	    return d.start < visEnd && d.end > visStart;
-	});
+    var visItems = track.items
 
     //    console.log(track.items);
 
@@ -378,7 +373,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     // except to deal with the _zoom class when zooming
     // in and out
     .attr("class", function(d) {
-	return track.trackName + '_' + d.suffix + ' ' + ((d.width > 5) ? (track.trackName + '_' + d.suffix + '_zoomed') : '' ) + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');});
+	return track.trackName + '_' + d.suffix +'_'+ d.type +' ' + ((d.width > 5) ? (track.trackName + '_' + d.suffix + '_zoomed') : '' ) + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');});
 
     // Process the text for changed/moved rects
     rects.selectAll("text")
@@ -451,7 +446,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 		.append("rect")
 		.attr("class", function(d) {
 
-			return track.trackName + '_' + d.suffix + ' ' + ((d.width > 5) ? (track.trackName + '_' + d.suffix + '_zoomed') : '') + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');})
+			return track.trackName + '_' + d.suffix + '_' + d.type + ' ' + ((d.width > 5) ? (track.trackName + '_' + d.suffix + '_zoomed') : '') + ' ' + ('undefined' !== typeof d.extraclass ? d.extraclass : '');})
 		.attr("width", function(d) {return d.width;})
 		.attr("height", function(d) {
 			if(track.trackFeatures == 'complex') {

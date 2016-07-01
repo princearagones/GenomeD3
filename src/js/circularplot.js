@@ -1126,7 +1126,7 @@ circularTrack.prototype.moveBrush = function(startRad, endRad) {
     var g = this.g;
     var cfg = this.layout;
 
-    //    console.log("moving brush to " + startRad, endRad);
+        console.log("moving brush to " + startRad, endRad);
 
     this.brushArc
     .startAngle(startRad)

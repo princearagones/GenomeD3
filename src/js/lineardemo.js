@@ -2,17 +2,17 @@
    parameters such as the genome size, the height of the
    plot in px, the width of the plot, the div container to
    put the SVG element, and an initial zoom level */
-var linearlayout = { genomesize: 6264404,
+var linearlayout = { genomesize: 373245519,
                      height: 250,
-                     width: 900,
+                     width: 1100,
                      container: "#linearchart",
                      initStart: 0,
-                     initEnd: 200000,
+                     initEnd: 20000000,
 		    };
 
 /* Initialize the layout for the linear brush, including
    what container to put the brush in to */
-var contextLayout = { genomesize: 6264404,
+var contextLayout = { genomesize: 373245519,
                       container: "#brush" };
 
 /* Initialize the plot with the layout and the tracks data,

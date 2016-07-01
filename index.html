@@ -5,6 +5,7 @@
     <title>GenomeD3Plot Circularplot Example</title>
     <script src="d3/d3.js"></script>
     <script src="d3/d3-tip.js"></script>
+    <script src="src/js/jquery-3.0.0.js"></script>
     <style>
     body {
      margin: 0;
@@ -73,23 +74,28 @@
     <link href="src/css/tracks.css" rel="stylesheet">
     <script src="src/js/readinput.js"></script>
     <script>
-    var tracks =[{
-    trackName: "track2",
-    visible: true,
-    trackType: "stranded",
-    inner_radius: 315,
-    outer_radius: 365,
-    centre_line_stroke: "grey",
-    showLabels: true,
-    showTooltip: true
-    }]
+    // start of pseudo data
+    //var tracks =[];
+    // //
+    // var track1 = {
+    // trackName: "track2",
+    // visible: true,
+    // trackType: "stranded",
+    // inner_radius: 315,
+    // outer_radius: 365,
+    // centre_line_stroke: "grey",
+    // showLabels: true,
+    // showTooltip: true
+    // };
 
     // var request = new XMLHttpRequest();
-    // request.open("GET", "sampdata.json",false);
+    // request.open("GET", "data/pseudo/sampdata.json",false);
     // request.send(null)
-    // var tracks1 = JSON.parse(request.responseText);
+    // var track = JSON.parse(request.responseText);
+    // track1.items = track;
+    // console.log(track1);
+    // tracks.push(track1);
 
-    tracks[0].items = track;
     </script>
   </head>
   <body>
@@ -108,16 +114,16 @@
     <!-- Circular plot library -->
     <script type="text/javascript" src="src/js/circularplot.js"></script>
     <!-- Linear plot library -->
-    <!-- <script type="text/javascript" src="linearplot.js"></script> -->
+    <script type="text/javascript" src="src/js/linearplot.js"></script>
 
      <!-- Linear brush library -->
-    <!-- <script type="text/javascript" src="linearbrush.js"></script> -->
+    <script type="text/javascript" src="src/js/linearbrush.js"></script>
 
      <!-- Initialization code to initialize the plots, this is what you would write
           and place in your application. Note, pulled from the linear and circular
           plot demo Gists -->
-    <!-- <script type="text/javascript" src="lineardemo.js"></script> -->
     <script type="text/javascript" src="src/js/circularsample.js"></script>
+    <script type="text/javascript" src="src/js/lineardemo.js"></script>
 
 
     <script type="text/javascript" src="d3/d3.layout.mod.js"></script>
@@ -165,7 +171,7 @@
     svg.append("svg:path")
     .attr("class", "arc")
     .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
-    .on("mousedown", mousedown);
+    //.on("mousedown", mousedown);
 
     d3.json("data/pseudo/tra.json", function(classes) {
     var nodes = cluster.nodes(packages.root(classes)),
@@ -210,10 +216,10 @@
     return [e.pageX - rx, e.pageY - ry];
     }
 
-    function mousedown() {
-    m0 = mouse(d3.event);
-    d3.event.preventDefault();
-    }
+    // function mousedown() {
+    // m0 = mouse(d3.event);
+    // d3.event.preventDefault();
+    // }
 
     function mousemove() {
     if (m0) {

@@ -636,7 +636,6 @@
         return event;
     }
     d3.event = null;
-
     function d3_eventPreventDefault() {
         d3.event.preventDefault();
     }

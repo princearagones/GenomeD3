@@ -118,8 +118,49 @@
    a different set of colours */
 .track2_pos {
     fill: #000099;
-    fill-opacity: .7;
+    fill-opacity: .05;
 }
+
+.track2_pos_DEL {
+    fill: black;
+    fill-opacity: .05;
+}
+
+.track2_pos_INS {
+    fill: blue;
+    fill-opacity: .05;
+}
+
+.track2_pos_INV {
+    fill: red;
+    fill-opacity: .05;
+}
+
+.track2_pos_DUP {
+    fill: green;
+    fill-opacity: .05;
+}
+
+.track2_neg_DEL {
+    fill: black;
+    fill-opacity: .05;
+}
+
+.track2_neg_INS {
+    fill: blue;
+    fill-opacity: .05;
+}
+
+.track2_neg_INV {
+    fill: red;
+    fill-opacity: .05;
+}
+
+.track2_neg_DUP {
+    fill: green;
+    fill-opacity: .05;
+}
+
 
 /* When a linear track is zoomed to the point 
    it's text is visible an extra class is added

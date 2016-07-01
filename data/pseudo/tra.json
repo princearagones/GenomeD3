@@ -176,6 +176,6 @@
 {"name":"PA0175", "strand":-1, "imports":[]},
 {"name":"PA0176", "strand":-1, "imports":[]},
 {"name":"PA0177", "strand":-1, "imports":[]},
-{"name":"PA5571", "strand":1, "imports":["PA5573"],"type": "DEL"},
-{"name":"PA5572", "strand":1, "imports":[],"type": "INS"},
-{"name":"PA5573", "strand":1, "imports":[],"type": "INV"}]
+{"name":"PA5571", "strand":1, "imports":["PA5573"]},
+{"name":"PA5572", "strand":1, "imports":[]},
+{"name":"PA5573", "strand":1, "imports":[]}]
