@@ -1,9 +1,9 @@
 var tracks = [];
 
-readFile("data/real/IRIS_313-15897.DUP", tracks);
-readFile("data/real/IRIS_313-15897.DEL", tracks);
-readFile("data/real/IRIS_313-15897.INS", tracks);
-readFile("data/real/IRIS_313-15897.INV", tracks);
+// readFile("data/real/IRIS_313-15897.DUP", tracks);
+// readFile("data/real/IRIS_313-15897.DEL", tracks);
+// readFile("data/real/IRIS_313-15897.INS", tracks);
+// readFile("data/real/IRIS_313-15897.INV", tracks);
 
 function readFile(file ,tracks){
   var rawFile = new XMLHttpRequest();
@@ -39,7 +39,7 @@ function readFile(file ,tracks){
                 var id = 0;
                 allText.split("\n").forEach(function(data){
                   if(data != ""){
-
+                      id++;
                       var obj = {}
                       var str = data.split("\t");
                       for(i=0;i<str.length;i++){
@@ -47,14 +47,13 @@ function readFile(file ,tracks){
                         obj.start = parseInt(str[1]);
                         obj.end = parseInt(str[2]);
                         obj.id = id;
-                        id++;
                 
                         obj.type = str[3];
                         obj.import = [];
                         obj.strand = 1;
                         obj.name = str[0]+'.'+str[1]+'.'+str[3];
                       }
-                        track.push(obj);
+                        if(obj.end-obj.start>=100)track.push(obj);
                   }
                 });
                 track1.items = track;

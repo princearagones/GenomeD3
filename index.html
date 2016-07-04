@@ -129,8 +129,10 @@
     <script type="text/javascript" src="d3/d3.layout.mod.js"></script>
     <script type="text/javascript" src="d3/d3.js"></script>
     <script type="text/javascript" src="src/js/packages.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" src="makeRibbons.js"></script>
 
+    <script type="text/javascript">
+    var ribbons = makeRibbons().splice(1,118);
     var w = 900,
     h = 820,
     rx = w / 2 +30,
@@ -173,8 +175,7 @@
     .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
     //.on("mousedown", mousedown);
 
-    d3.json("data/pseudo/tra.json", function(classes) {
-    var nodes = cluster.nodes(packages.root(classes)),
+    var nodes = cluster.nodes(packages.root(ribbons)),
       links = packages.imports(nodes),
       splines = bundle(links);
     //  console.log(splines);
@@ -205,7 +206,6 @@
     d3.select("input[type=range]").on("change", function() {
     line.tension(this.value / 100);
     path.attr("d", function(d, i) { return line(splines[i]); });
-    });
     });
 
     d3.select(window)
