@@ -134,7 +134,7 @@
 
 .track2_pos_DEL {
     fill: black;
-    fill-opacity: 0.05;
+    /*fill-opacity: 0.5;*/
 }
 
 .track2_pos_DUP {
@@ -153,7 +153,7 @@
 
 .track2_neg_DEL {
     fill: black;
-    fill-opacity: 0.05;
+    /*fill-opacity: 0.05;*/
 }
 
 .track2_neg_DUP {

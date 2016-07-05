@@ -5,6 +5,59 @@
 // the genome size, the div container to put the
 // SVG object in, what function to call during a
 // double click and the initial chart size.
+var tracks = [];
+
+var track1 = {
+	    trackName: "track2",
+	    visible: true,
+	    trackType: "stranded",
+	    inner_radius: 315,
+	    outer_radius: 365,
+	    centre_line_stroke: "grey",
+	    showLabels: true,
+	    showTooltip: true,
+	    items: []
+	    };
+
+var chrlength = [43270923,35937250,	36413819,35502694,29958434,31248787,29697621,28443022,23012720,23207287,29021106,27531856];
+
+var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/';
+var td = '/trackData.json';
+var hist = '/hist-100000-0.json';
+
+
+tracks.push(track1);
+
+// for(i=1;i<=12;i++){
+// 	console.log("ano na ?");
+// 		var chr = i < 10 ? ('chr0'+i.toString()) : ('chr'+i.toString());
+
+// 	 	// d3.json(path+chr+td,function(response){
+//   	// 		max.push(response.histograms.stats[resolution].max);
+// 	  //       chrlength.push(response.intervals.maxEnd);
+// 			// maxlen = Math.max.apply(null,max);
+// 	 	// })
+
+// 	 	d3.json(path+chr+hist,function(response){
+//   			console.log(response);
+//   			for(j=0;j<response.length;j++){
+// 				var obj = {};
+// 				obj.chr = i;
+// 				obj.start = j*100000;
+// 				obj.end = (obj.start+100000) > chrlength[i-1] ? chrlength[i-1] : obj.start+100000;
+// 				obj.count = response[i][j];
+// 				// obj.opacity = obj.count / maxlen;
+// 				obj.strand = 1;
+// 				obj.type = 'DEL';
+// 				// trackish.push(obj);
+// 				tracks[0].items.push(obj);
+// 			}
+// 	 	})
+// }
+id = 0;
+
+	 	
+
 
 
 var chromtracks = {
@@ -37,8 +90,73 @@ var chromtracks = {
 								 {id: 11, start:316692557, end:345713663, name:"Chromosome 11", strand: -1, type:"Chromosome"},
 								 {id: 12, start:345713663, end:373245519, name:"Chromosome 12", strand: -1, type:"Chromosome"}]
 }
-tracks.push(chromtracks);
 
+		// d3.json("http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/chr01/hist-100000-0.json",function(response){
+  // 			console.log(response);
+  // 			for(j=0;j<response.length;j++){
+		// 		var obj = {};
+		// 		obj.chr = 1;
+		// 		obj.start = j*100000 + chromtracks.items[0].start;
+		// 		obj.id = id;
+		// 		id++;
+		// 		obj.end = (obj.start+100000) > chrlength[0]+chromtracks.items[0].start ? chrlength[0]+chromtracks.items[0].start : obj.start+100000;
+		// 		obj.count = response[j];
+		// 		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
+		// 		// obj.opacity = obj.count / maxlen;
+		// 		obj.strand = 1;
+		// 		obj.type = 'DEL';
+		// 		// trackish.push(obj);
+		// 		tracks[0].items.push(obj);
+		// 	}
+	 // 	});
+	 // 	d3.json("http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/chr02/hist-100000-0.json",function(response){
+  // 			console.log(response);
+  // 			for(j=0;j<response.length;j++){
+		// 		var obj = {};
+		// 		obj.chr = 2;
+		// 		obj.start = j*100000+ chromtracks.items[1].start;
+		// 		obj.id = id;
+		// 		id++;
+		// 		obj.end = (obj.start+100000) > chrlength[1]+chromtracks.items[1].start ? chrlength[1]+chromtracks.items[1].start : obj.start+100000;
+		// 		obj.count = response[j];
+		// 		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
+		// 		// obj.opacity = obj.count / maxlen;
+		// 		obj.strand = 1;
+		// 		obj.type = 'DEL';
+		// 		// trackish.push(obj);
+		// 		tracks[0].items.push(obj);
+		// 		 d3.select("svg#circularchart_svg").remove();
+		// 		 cTrack = new circularTrack(circularlayout, tracks);
+		// 	}
+	 // 	});
+
+	 for(i=1;i<=12;i++){
+		var chr = i < 10 ? ('chr0'+i.toString()) : ('chr'+i.toString());
+	 		console.log(chr);
+
+	 	d3.json(path+chr+hist,function(response){																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												
+  			console.log(response);
+  			for(j=0;j<response.length;j++){
+				var obj = {};
+				console.log(i);
+				obj.chr = i;
+				obj.start = j*100000+ chromtracks.items[i-1].start;
+				obj.id = id;
+				id++;
+				obj.end = (obj.start+100000) > chrlength[i-1]+chromtracks.items[i-1].start ? chrlength[1]+chromtracks.items[i-1].start : obj.start+100000;
+				obj.count = response[j];
+				obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
+				// obj.opacity = obj.count / maxlen;
+				obj.strand = 1;
+				obj.type = 'DEL';
+				// trackish.push(obj);
+				tracks[0].items.push(obj);
+				
+			}
+			d3.select("svg#circularchart_svg").remove();
+			cTrack = new circularTrack(circularlayout, tracks);
+	 	})
+}
 
 for(i=0;i<tracks.length-1;i++){
 	tracks[i].items.forEach(function(tr){
@@ -48,6 +166,8 @@ for(i=0;i<tracks.length-1;i++){
 	});
 }
 
+
+tracks.push(chromtracks);
 
 var genomesize = 373245519;
 var circularlayout = {genomesize: genomesize,
@@ -64,7 +184,7 @@ var circularlayout = {genomesize: genomesize,
 // request.open("GET", "sampdata.json",false);
 // request.send(null)
 // var tracks = JSON.parse(request.responseText);
-// console.log(tracks);
+ console.log(tracks);
 
 
 var cTrack = new circularTrack(circularlayout, tracks);
@@ -176,3 +296,4 @@ function doubleClick(plotid, bp) {
 
     }
 }
+

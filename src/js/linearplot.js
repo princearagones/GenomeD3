@@ -168,11 +168,8 @@ function genomeTrack(layout,tracks) {
 
 
     for(var i=0; i < this.tracks.length; i++) {
-    	console.log("para sa track number "+i);
-    	console.log(tracks[i].items);
 	// We're going to see what type of tracks we have
 	// and dispatch them appropriately
-
 	 if("undefined" !== typeof this.tracks[i].skipLinear
 	    &&  this.tracks[i].skipLinear == true) {
 	 	console.log("skip daw e");
@@ -181,7 +178,6 @@ function genomeTrack(layout,tracks) {
 
 	 if("undefined" == typeof this.tracks[i].trackFeatures) {
 	     this.tracks[i].trackFeatures = "simple";
-	     console.log("simple lang si "+i);
 	 } else if(this.tracks[i].trackFeatures == "complex") {
 	     // We need to pre-calculate the stacking order for
 	     // all arrow type features
@@ -358,7 +354,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     //    console.log(visStart, visEnd);
     var visItems = track.items
 
-    //    console.log(track.items);
+       console.log(track.items);
 
     var rects = this.itemRects[i].selectAll("g")
     .data(visItems, function(d) { return d.id; })

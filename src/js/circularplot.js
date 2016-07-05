@@ -1,3 +1,4 @@
+
 var circularTrackDefaults = {
     radius: 10,
     w: 600,
@@ -36,7 +37,7 @@ function fill(d) {
 }
 
 function circularTrack(layout,tracks) {
-
+    console.log(tracks);
     this.tracks = tracks;
     this.layout = layout;
     this.numTracks = tracks.length;
@@ -522,6 +523,7 @@ circularTrack.prototype.removePlot = function(i) {
 //
 // Track type tracks (as blocks without strands)fill(d)
 circularTrack.prototype.drawTrack = function(i, animate) {
+    console.log(this.tracks[i]);
     var g = this.g;
     var cfg = this.layout;
     var track = this.tracks[i];;
@@ -564,6 +566,7 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     .append("path")
     .attr("d", arc)
     .style("fill", function(d) { return fill(d) })
+    .style("fill-opacity", function(d) { return d.count / 2500})
     .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '')+ ('undefined' !== typeof d.extraclass ? d.extraclass : '')+ ('undefined' !== typeof d.type ? ('_'+d.type) : '')})
     .attr("transform", "translate("+cfg.w2+","+cfg.h2+")")
     .on("click", function(d,i) {

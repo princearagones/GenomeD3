@@ -11,6 +11,6 @@ function makeRibbons(){
     ribbon.imports=[];
     ribbons.push(ribbon);
   }
-  console.log(ribbons);
+  // console.log(ribbons);
 }
 makeRibbons();

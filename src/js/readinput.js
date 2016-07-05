@@ -1,6 +1,6 @@
 var tracks = [];
 
-// readFile("data/real/IRIS_313-15897.DUP", tracks);
+readFile("data/real/IRIS_313-15897.DUP", tracks);
 // readFile("data/real/IRIS_313-15897.DEL", tracks);
 // readFile("data/real/IRIS_313-15897.INS", tracks);
 // readFile("data/real/IRIS_313-15897.INV", tracks);
