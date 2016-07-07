@@ -172,7 +172,6 @@ function genomeTrack(layout,tracks) {
 	// and dispatch them appropriately
 	 if("undefined" !== typeof this.tracks[i].skipLinear
 	    &&  this.tracks[i].skipLinear == true) {
-	 	console.log("skip daw e");
 	     continue;
 	 }
 
@@ -365,6 +364,8 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     rects.selectAll("rect")
     .each(function (d) { d.width = x1(d.end + 1) - x1(d.start); })
     .attr("width", function(d) {return d.width;})
+    .style("fill", function(d) { return fill(d) })
+    .style("fill-opacity", function(d) { return d.count / 2500})
     // Yes we really don't need to set the class here again
     // except to deal with the _zoom class when zooming
     // in and out

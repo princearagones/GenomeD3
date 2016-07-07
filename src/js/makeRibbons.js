@@ -10,7 +10,8 @@ function makeRibbons(){
     ribbon.end= ribbon.start + chrLen -1;
     ribbon.imports=[];
     ribbons.push(ribbon);
+    console.log(ribbon);
   }
-  // console.log(ribbons);
+  return ribbons;
 }
 makeRibbons();
