@@ -11,6 +11,7 @@
      margin: 0;
      font-size: 14px;
      font-family: "Helvetica Neue", Helvetica;
+
    }
 
    #linearchart {
@@ -71,24 +72,24 @@
         stroke: #2ca02c;
       }
      #TRAhover {
+      /*background-color: #99ff99;*/
+      min-width: 100px;
+      min-height: 300px;
+      margin-right: 20%;
+      margin-top: 10%;
       border-style: solid;
       border-color: green;
       float: right;
       right:10px;
       top: 10px;
       width: 30%;
+      font-size: 150%;
      } 
-     #to {
-      float: left;
-      right: 20%;
-      background: yellow;
-      width: 14%;
+     .trred {
+        background-color: #ff9999;
      }
-     #from {
-      width: 14%;
-      float: right;
-      margin-right: 40%;
-      background: orange;
+     .trgreen{
+        background-color: #99ff99;
      }
 
 
@@ -120,9 +121,6 @@
     // track1.items = track;
     // console.log(track1);
     // tracks.push(track1);
-
-    
-
     </script>
   </head>
   <body>
@@ -132,9 +130,26 @@
       <div id="linearchart"></div>
       <div id="brush"></div>
       <div id="TRAhover">
-        <div id="info"></div>
-        <div id="to"></div>
-        <div id="from"></div>
+        <div id="info" > </div>
+          <div id="logo" style="float:right;position:relative;" >
+            <!-- <img src="src/img/icon.png" style="width: 200px; height 200px;top:0"> -->
+          </div>
+        <div id="details">
+             <table style="width:100%">
+              <thead>
+                <tr>
+                  <th>Chr from:</th>
+                  <th>Start:</th>
+                  <th>End:</th>
+                  <th>Chr to:</th>
+                  <th>Start:</th>
+                  <th>End:</th>
+                </tr>
+              </thead>
+              <tbody id="detailsTable"></tbody>
+            </table>
+
+        </div>
       </div>
     </div>
 
@@ -155,7 +170,7 @@
           and place in your application. Note, pulled from the linear and circular
           plot demo Gists -->
     <script type="text/javascript" src="src/js/circularsample.js"></script>
-    <!-- <script type="text/javascript" src="src/js/lineardemo.js"></script> -->
+    <script type="text/javascript" src="src/js/lineardemo.js"></script>
 
 
     <script type="text/javascript" src="d3/d3.layout.mod.js"></script>

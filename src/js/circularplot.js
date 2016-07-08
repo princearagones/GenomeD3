@@ -37,7 +37,7 @@ function fill(d) {
 }
 
 function circularTrack(layout,tracks) {
-    console.log(tracks);
+    // console.log(tracks);
     this.tracks = tracks;
     this.layout = layout;
     this.numTracks = tracks.length;
@@ -523,7 +523,7 @@ circularTrack.prototype.removePlot = function(i) {
 //
 // Track type tracks (as blocks without strands)fill(d)
 circularTrack.prototype.drawTrack = function(i, animate) {
-    console.log(this.tracks[i]);
+    // console.log(this.tracks[i]);
     var g = this.g;
     var cfg = this.layout;
     var track = this.tracks[i];;
@@ -1097,7 +1097,7 @@ circularTrack.prototype.createBrush = function() {
 
 circularTrack.prototype.doBrushCallback = function(startBP, endBP) {
     var cfg = this.layout;
-
+    console.log("CHANGE BRUSH: " + startBP +','+endBP);
     if( Object.prototype.toString.call( this.callbackObj ) === '[object Array]' ) {
 	for(var obj in this.callbackObj) {
 	    if(this.callbackObj.hasOwnProperty(obj)) {

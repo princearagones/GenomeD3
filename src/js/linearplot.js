@@ -90,7 +90,7 @@ function genomeTrack(layout,tracks) {
     this.drawFeatures();
 
     this.main = this.chart.append("g")
-       	.attr("transform", "translate(" + this.layout.left_margin + ",0)")
+    .attr("transform", "translate(" + this.layout.left_margin + ",0)")
 	.attr("width", this.layout.width_without_margins)
 	.attr("height", this.layout.height)
 	.attr("class", "mainTrack");
@@ -334,6 +334,7 @@ genomeTrack.prototype.countTracks = function() {
 }
 
 genomeTrack.prototype.displayStranded = function(track, i) {
+	// console.log(track, i);
     var visStart = this.visStart,
     visEnd = this.visEnd,
     visRange = visEnd - visStart,
@@ -353,7 +354,6 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     //    console.log(visStart, visEnd);
     var visItems = track.items
 
-       console.log(track.items);
 
     var rects = this.itemRects[i].selectAll("g")
     .data(visItems, function(d) { return d.id; })
@@ -983,8 +983,8 @@ genomeTrack.prototype.displayAxis = function() {
     this.axisContainer.select(".xaxislinear").call(this.xAxis);
 }
 
-    genomeTrack.prototype.update = function(startbp, endbp, params) {
-    //    console.log(startbp, endbp);
+genomeTrack.prototype.update = function(startbp, endbp, params) {
+       // console.log(startbp, endbp);
 
     this.visStart = startbp;
     this.visEnd = endbp;

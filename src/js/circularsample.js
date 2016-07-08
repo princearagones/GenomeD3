@@ -154,20 +154,52 @@ asyncLoop({
 		var td = '/trackData.json';
 		var hist = '/hist-100000-0.json';
         setTimeout(function(){
-            console.log('Iteration ' + i + ' <br>');
+            // console.log('Iteration ' + i + ' <br>');
             var chr = i < 9 ? ('chr0'+(i+1).toString()) : ('chr'+(i+1).toString());
 			d3.json(path+chr+hist, function(response){readonebyone(response, (i+1),chr)});
             loop();
-        },5);
+        },10);
     },
     callback : function(){
-        console.log('All done!');
+        // console.log('All done!');
+        var genomesize = 373245519;
+		var circularlayout = {genomesize: genomesize,
+				      container: "#circularchart",
+				      dblclick: "doubleClick",
+		                      w: 800, h: 800
+		        };
          // d3.select("svg#circularchart_svg").remove();
-			  $.getScript("d3/d3-tip.js", function(){
-				 d3.select("svg#circularchart_svg").remove();
-				 cTrack = new circularTrack(circularlayout, tracks);
-				 $.getScript("makeRibbons.js"); 
-				 $.getScript("src/js/lineardemo.js");
+		$.getScript("d3/d3-tip.js", function(){
+			// 	 d3.select("svg#circularchart_svg").remove();
+			// 	 cTrack = new circularTrack(circularlayout, tracks);
+			// 	 if('undefined' !== typeof linearTrack) {
+			// 		    console.log("Attaching linear track");
+			// 		    cTrack.attachBrush(linearTrack);
+			// 		    cTrack.showBrush();
+			// 		}
+
+			// 		if('undefined' !== typeof brush) {
+			// 		    console.log("Attaching linear track brush");
+			// 		    cTrack.attachBrush(brush);
+			// 		\\}
+			var cTrack = new circularTrack(circularlayout, tracks);
+			//console.log(cTrack);
+
+			if('undefined' !== typeof linearTrack) {
+			    console.log("Attaching linear track");
+			    cTrack.attachBrush(linearTrack);
+			    cTrack.showBrush();
+			}
+
+			if('undefined' !== typeof brush) {
+			    console.log("Attaching linear track brush");
+			    cTrack.attachBrush(brush);
+			}
+			$.getScript("makeRibbons.js"); 
+			// 	 // $.getScript("src/js/lineardemo.js");
+			linearTrack.update(0,20000000,null);
+			linearTrack.rescale();
+			linearTrack.displayStranded(tracks[0], 0);
 			});
     }    
 });
@@ -188,8 +220,6 @@ function readonebyone(response, i,chr){
 		// trackish.push(obj);
 		tracks[0].items.push(obj);
 	}
-
-	
 }
 
 for(i=0;i<tracks.length-1;i++){
@@ -218,7 +248,7 @@ var circularlayout = {genomesize: genomesize,
 // request.open("GET", "sampdata.json",false);
 // request.send(null)
 // var tracks = JSON.parse(request.responseText);
-console.log(tracks);
+// console.log(tracks);
 
 
 var cTrack = new circularTrack(circularlayout, tracks);

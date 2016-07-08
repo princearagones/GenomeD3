@@ -13,6 +13,7 @@ function makeRibbons(){
     ribbon.end= ribbon.start + chrLen -1;
     ribbon.imports=[];
     ribbon.source=[];
+    ribbon.details=[];
     ribbons.push(ribbon);
     // console.log(ribbon);
   }
@@ -36,6 +37,19 @@ function makeRibbons(){
                     var target_start = chromtracks.items[parseInt(arr[3].replace('chr',''))-1].start + parseInt(arr[4]);
                     if(!ribbons[Math.floor(source_start/chrLen)].imports.contains(ribbons[Math.floor(target_start/chrLen)].name)) ribbons[Math.floor(source_start/chrLen)].imports.push(ribbons[Math.floor(target_start/chrLen)].name);
                     if(!ribbons[Math.floor(target_start/chrLen)].source.contains(ribbons[Math.floor(source_start/chrLen)].name)) ribbons[Math.floor(target_start/chrLen)].source.push(ribbons[Math.floor(source_start/chrLen)].name);
+                    var obj = {
+                      fromChr: parseInt(arr[0].replace('chr','')),
+                      fromStart: parseInt(arr[1]),
+                      fromEnd: parseInt(arr[2]),
+                      toChr: parseInt(arr[3].replace('chr','')),
+                      toStart: parseInt(arr[4]),
+                      toEnd: parseInt(arr[5])
+                    }
+                    obj.class = "red";
+                    ribbons[Math.floor(source_start/chrLen)].details.push(obj);
+                    var obj2 = JSON.parse(JSON.stringify(obj));
+                    obj2.class = "green"
+                    ribbons[Math.floor(target_start/chrLen)].details.push(obj2);
                   }
                 });
                 
@@ -44,7 +58,7 @@ function makeRibbons(){
     }
     rawFile.send(null);
 
-  console.log(ribbons);
+  // console.log(ribbons);
   return ribbons;
 }
 
@@ -177,25 +191,43 @@ function makeRibbons(){
       .classed("source", true)
       .each(updateNodes("target", true));
 
+
     document.getElementById("info").innerHTML = d.key + "</br>Start: " + d.start + "</br>End: "+ d.end;
-    document.getElementById("to").innerHTML = "Transfer to: </br>";
-    d.imports.forEach(function(i){
-      document.getElementById("to").innerHTML += i + "</br>";
-    });
+    // document.getElementById("to").innerHTML = "Transfer to: </br>";
+    // d.imports.forEach(function(i){
+    //   document.getElementById("to").innerHTML += i + "</br>";
+    // });
 
-    document.getElementById("from").innerHTML = "Transfer from: </br>"
-    d.source.forEach(function(s){
-      document.getElementById("from").innerHTML += s + "</br>";
-    });
-    // svg.selectAll("path.link.source-" + d.key).forEach(function(s){
-    //   console.log(s[0]);
-    //   console.log(s[1]);
-    //   console.log(s[2]);
-    //   console.log(s[3]);
+    // document.getElementById("from").innerHTML = "Transfer from: </br>"
+    // d.source.forEach(function(s){
+    //   document.getElementById("from").innerHTML += s + "</br>";
+    // });
 
-    //   document.getElementById("TRAhover").innerHTML +=s.classList;
-    // })
-      console.log(d);
+        $("#detailsTable tr").remove(); 
+      d.details.forEach(function(det){
+        console.log(det);
+        var tr = document.createElement('tr');
+        tr.className = det.class == "red" ? "trred" : "trgreen";
+        var ch1 = document.createElement('td');
+        ch1.innerHTML = 'Chr'+det.fromChr;
+        var s1 = document.createElement('td');
+        s1.innerHTML = det.fromStart;
+        var e1 = document.createElement('td');
+        e1.innerHTML = det.fromEnd;
+        var ch2 = document.createElement('td');
+        ch2.innerHTML = 'Chr'+det.toChr;
+        var s2 = document.createElement('td');
+        s2.innerHTML =det.toStart;
+        var e2 = document.createElement('td');
+        e2.innerHTML =det.fromStart;
+        tr.appendChild(ch1);
+        tr.appendChild(s1);
+        tr.appendChild(e1);
+        tr.appendChild(ch2);
+        tr.appendChild(s2);
+        tr.appendChild(e2);
+        document.getElementById("detailsTable").appendChild(tr);
+      })
     }
 
     function mouseout(d) {
