@@ -27,10 +27,10 @@ function makeRibbons(){
         {
             if(rawFile.status === 200 || rawFile.status == 0)
             {
-                Math.floor((Math.random() * 1000) + 1); 
+                Math.floor((Math.random() * 1000) + 1);
                 var allText = rawFile.responseText;
                 allText.split("\n").forEach(function(data){
-                    var x = Math.floor((Math.random() * 100) + 1); 
+                    var x = Math.floor((Math.random() * 100) + 1);
                   if(data!="" && x==1){
                     var arr = data.split("\t");
                     var source_start = chromtracks.items[parseInt(arr[0].replace('chr',''))-1].start + parseInt(arr[1]);
@@ -52,7 +52,7 @@ function makeRibbons(){
                     ribbons[Math.floor(target_start/chrLen)].details.push(obj2);
                   }
                 });
-                
+
             }
         }
     }
@@ -65,7 +65,7 @@ function makeRibbons(){
  var ribbons = makeRibbons();
     var w = 900,
     h = 820,
-    rx = w / 2 +30,
+    rx = w / 2 -15,
     ry = h / 2,
     m0,
     rotate = 0;
@@ -130,7 +130,7 @@ function makeRibbons(){
       .attr("dy", ".31em")
       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
       .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-      .text(function(d) { return "====="; })
+      .text(function(d) { return "======"; })
       .on("mouseover", mouseover)
       .on("mouseout", mouseout);
 
@@ -203,9 +203,8 @@ function makeRibbons(){
     //   document.getElementById("from").innerHTML += s + "</br>";
     // });
 
-        $("#detailsTable tr").remove(); 
+        $("#detailsTable tr").remove();
       d.details.forEach(function(det){
-        console.log(det);
         var tr = document.createElement('tr');
         tr.className = det.class == "red" ? "trred" : "trgreen";
         var ch1 = document.createElement('td');

@@ -20,8 +20,8 @@ var track1 = {
 	    };
 
 var chrlength = [43270923,35937250,	36413819,35502694,29958434,31248787,29697621,28443022,23012720,23207287,29021106,27531856];
-
-var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/';
+//http://172.29.4.215:8080/jbrowse-dev2/
+var path = 'data/tracks/msu7indelsv2/';
 var td = '/trackData.json';
 var hist = '/hist-100000-0.json';
 
@@ -137,12 +137,12 @@ var chromtracks = {
 var asyncLoop = function(o){
     var i=-1,
         length = o.length;
-    
+
     var loop = function(){
         i++;
         if(i==length){o.callback(); return;}
         o.functionToLoop(loop, i);
-    } 
+    }
     loop();//init
 }
 
@@ -150,7 +150,7 @@ var asyncLoop = function(o){
 asyncLoop({
     length : 12,
     functionToLoop : function(loop, i){
-    	var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/';
+    var path = 'data/tracks/msu7indelsv2/';
 		var td = '/trackData.json';
 		var hist = '/hist-100000-0.json';
         setTimeout(function(){
@@ -195,23 +195,25 @@ asyncLoop({
 			    console.log("Attaching linear track brush");
 			    cTrack.attachBrush(brush);
 			}
-			$.getScript("makeRibbons.js"); 
+			$.getScript("makeRibbons.js");
 			// 	 // $.getScript("src/js/lineardemo.js");
 			linearTrack.update(0,20000000,null);
 			linearTrack.rescale();
 			linearTrack.displayStranded(tracks[0], 0);
 			});
-    }    
+    }
 });
 
 function readonebyone(response, i,chr){
 	for(j=0;j<response.length;j++){
 		var obj = {};
 		obj.chr = i;
-		obj.start = j*100000+ chromtracks.items[i-1].start;
+		obj.realStart = j*100000;
+		obj.start = obj.realStart+ chromtracks.items[i-1].start;
 		obj.id = id;
 		id++;
 		obj.end = (obj.start+100000) > chrlength[i-1]+chromtracks.items[i-1].start ? chrlength[1]+chromtracks.items[i-1].start : obj.start+100000;
+		obj.realEnd = obj.end - chromtracks.items[i-1].start;
 		obj.count = response[j];
 		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
 		// obj.opacity = obj.count / maxlen;
@@ -360,4 +362,3 @@ function doubleClick(plotid, bp) {
 
     }
 }
-

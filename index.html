@@ -71,6 +71,12 @@
       .link.target {
         stroke: #2ca02c;
       }
+      @media screen and (max-width: 1900px) {
+          #TRAhover {
+              display: none !important;
+          }
+      }
+
      #TRAhover {
       /*background-color: #99ff99;*/
       min-width: 100px;
@@ -84,7 +90,7 @@
       top: 10px;
       width: 30%;
       font-size: 150%;
-     } 
+     }
      .trred {
         background-color: #ff9999;
      }
@@ -152,7 +158,6 @@
         </div>
       </div>
     </div>
-
     <!-- Libraries needed for save feature -->
     <!-- <script type="text/javascript" src="http://bl.ocks.org/lairdm/raw/bdd7410698e06970a9ff/rgbcolor.js"></script>
     <script type="text/javascript" src="http://bl.ocks.org/lairdm/raw/bdd7410698e06970a9ff/canvg.js"></script>
@@ -179,7 +184,7 @@
 
     <script type="text/javascript">
     </script>
-    
+
     <!-- Controls on the demo -->
     <div id="demo-controls">
       <div class="control-item"><button name="saveImage" onclick="saveImage(); return false">Save Image</button></div>

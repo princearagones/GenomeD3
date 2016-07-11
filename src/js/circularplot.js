@@ -5,13 +5,13 @@ var circularTrackDefaults = {
     h: 600,
     factor: 1,
     factorLegend: .85,
-    TranslateX: 80,
+    TranslateX: 35,
     TranslateY: 30,
     ExtraWidthX: 100,
     ExtraWidthY: 100,
     radians: 2 * Math.PI,
     spacing: 10000000,
-    legend_spacing: 2,
+    legend_spacing: 1,
     min_radians: .02 * Math.PI,
     dragresize: true,
     movecursor: false
@@ -171,7 +171,7 @@ function circularTrack(layout,tracks) {
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
 	.html(function(d) {
-		return "<strong>Name:</strong> <span style='color:red'>" + d.name + "</span>";
+		return "<strong>Count</strong> <span style='color:red'>" + d.count + "</span>";
 	    });
 
     this.container.call(this.tip);
@@ -284,7 +284,7 @@ function circularTrack(layout,tracks) {
 
 }
 
-circularTrack.prototype.drawAxis = function() {
+  circularTrack.prototype.drawAxis = function() {
     var cfg = this.layout;
     var g = this.g;
 
@@ -307,6 +307,14 @@ circularTrack.prototype.drawAxis = function() {
     .style("stroke", "grey")
     .style("stroke-width", "1px");
 
+    //chromosome label
+    var lbl = d3.range(0,cfg.genomesize, cfg.spacing*cfg.legend_spacing);
+    var lab = [];
+    tracks[1].items.forEach(function(i){
+      lab.push(i.end);
+    });
+
+
     var axis_label = this.axis_container.selectAll(".axislabel")
     .data(d3.range(0,cfg.genomesize, cfg.spacing*cfg.legend_spacing))
     .enter()
@@ -315,8 +323,21 @@ circularTrack.prototype.drawAxis = function() {
 
     axis_label.append("text")
     .attr("class", "legend")
-    .text(function(d){ var prefix = d3.formatPrefix(d);
-	    return prefix.scale(d) + prefix.symbol;
+    .text(function(d){
+      var idx;
+      var num;
+        for(i=0;i<lab.length;i++){
+          if(Math.floor(d/lab[i]) == 0){
+            idx = i;
+            if(i!=0)num = d-lab[i-1];
+            else num = d;
+            break;
+          }
+        }
+        console.log(idx);
+       var prefix = d3.formatPrefix(d);
+       if(num == 0) return null;
+	    return "C"+(idx+1)+" : "+Math.floor(prefix.scale(num)) + prefix.symbol;
 	})
     .style("font-family", "sans-serif")
     .style("font-size", "11px")
@@ -570,10 +591,10 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '')+ ('undefined' !== typeof d.extraclass ? d.extraclass : '')+ ('undefined' !== typeof d.type ? ('_'+d.type) : '')})
     .attr("transform", "translate("+cfg.w2+","+cfg.h2+")")
     .on("click", function(d,i) {
+      console.log(d, i);
 	    if('undefined' !== typeof track.mouseclick) {
 		var fn = window[track.mouseclick];
 		if('object' ==  typeof fn) {
-//		    console.log(fn);
 		    return fn.onclick(track.trackName, d, cfg.plotid);
 		} else if('function' == typeof fn) {
 		    return fn(track.trackName, d, cfg.plotid);

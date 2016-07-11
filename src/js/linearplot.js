@@ -144,7 +144,7 @@ function genomeTrack(layout,tracks) {
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
 	.html(function(d) {
-		return "<strong>Name:</strong> <span style='color:red'>" + d.name + "</span>";
+		return "<strong>Count:</strong> <span style='color:red'>" + d.count + "</span>";
 	    });
 
     this.chart.call(this.tip);
@@ -154,7 +154,7 @@ function genomeTrack(layout,tracks) {
 	.attr('width', this.layout.width_without_margins)
 	.attr("transform", "translate(" + (this.layout.left_margin + 5) + "," + this.layout.height_without_axis + ")");
 
-    this.xAxis = d3.svg.axis().scale(this.x1).orient("bottom")
+    this.xAxis = d3.svg.axis().scale(this.x1).orient("top")
 	.innerTickSize(-this.layout.height)
 	.outerTickSize(0)
 	.tickFormat(d3.format("s"));
@@ -454,6 +454,11 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 			return (d.strand == 0 ? .4 : .9) * scale_factor * y1(1);
 		    })
     .on("click", function(d,i) {
+      // console.log(d);
+      var path = "http://oryzasnp.org/jbrowse-dev2/"
+      var tail = "&tracks=DNA%2Cmsu7indelsv2&highlight="
+      var chr = d.chr > 10 ? d.chr.toString(): '0'+d.chr.toString();
+      window.open(path+'?loc=chr'+chr+'%3A'+d.realStart.toString()+'..'+d.realEnd.toString()+tail);
 	    if (d3.event.defaultPrevented) return; // click suppressed
 	    if('undefined' !== typeof track.linear_mouseclick) {
 		var fn = window[track.linear_mouseclick];

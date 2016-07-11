@@ -1,6 +1,6 @@
 var tracks = [];
 
-readFile("data/real/IRIS_313-15897.DUP", tracks);
+//readFile("data/real/IRIS_313-15897.DUP", tracks);
 // readFile("data/real/IRIS_313-15897.DEL", tracks);
 // readFile("data/real/IRIS_313-15897.INS", tracks);
 // readFile("data/real/IRIS_313-15897.INV", tracks);
@@ -47,7 +47,7 @@ function readFile(file ,tracks){
                         obj.start = parseInt(str[1]);
                         obj.end = parseInt(str[2]);
                         obj.id = id;
-                
+
                         obj.type = str[3];
                         obj.import = [];
                         obj.strand = 1;
