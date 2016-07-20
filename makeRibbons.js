@@ -1,11 +1,16 @@
+// Program description: Retrieves data for TRA transactions
+
 
 function makeRibbons(){
-  //TODO binning data to ribbons
-  var ribbons = [];
-  var numOfPoints = 180;
+  var ribbons = []; //3733
+  var numOfPoints = 374;
   var genLen = 373245519;
   var chrLen = Math.ceil(genLen / numOfPoints);
-  var file= "data/real/IRIS_313-15897.TRA"
+  var value = $("#trackName").val()
+  var file= "http://oryzasnp.org/iric-portal-static/tra/"+mappingTRAfile[value];
+  console.log(value);
+  console.log(file);
+    //bin creation
   for(i=0;i<numOfPoints;i++){
     var ribbon = {};
     ribbon.name = "segment"+i;
@@ -14,10 +19,9 @@ function makeRibbons(){
     ribbon.imports=[];
     ribbon.source=[];
     ribbon.details=[];
+    ribbon.type=[];
     ribbons.push(ribbon);
-    // console.log(ribbon);
   }
-  //console.log(ribbons);
 
   var rawFile = new XMLHttpRequest();
     rawFile.open("GET", file, false);
@@ -30,26 +34,32 @@ function makeRibbons(){
                 Math.floor((Math.random() * 1000) + 1);
                 var allText = rawFile.responseText;
                 allText.split("\n").forEach(function(data){
-                    var x = Math.floor((Math.random() * 100) + 1);
-                  if(data!="" && x==1){
+                  if(data!=""){ //parsing
                     var arr = data.split("\t");
                     var source_start = chromtracks.items[parseInt(arr[0].replace('chr',''))-1].start + parseInt(arr[1]);
                     var target_start = chromtracks.items[parseInt(arr[3].replace('chr',''))-1].start + parseInt(arr[4]);
-                    if(!ribbons[Math.floor(source_start/chrLen)].imports.contains(ribbons[Math.floor(target_start/chrLen)].name)) ribbons[Math.floor(source_start/chrLen)].imports.push(ribbons[Math.floor(target_start/chrLen)].name);
-                    if(!ribbons[Math.floor(target_start/chrLen)].source.contains(ribbons[Math.floor(source_start/chrLen)].name)) ribbons[Math.floor(target_start/chrLen)].source.push(ribbons[Math.floor(source_start/chrLen)].name);
+                    ribbons[Math.floor(source_start/chrLen)].imports.push(ribbons[Math.floor(target_start/chrLen)].name);
+                    ribbons[Math.floor(target_start/chrLen)].source.push(ribbons[Math.floor(source_start/chrLen)].name);
+                    ribbons[Math.floor(source_start/chrLen)].type.push(arr[6].toLowerCase());
+
+                    //this is obtained for translocation details
                     var obj = {
                       fromChr: parseInt(arr[0].replace('chr','')),
                       fromStart: parseInt(arr[1]),
                       fromEnd: parseInt(arr[2]),
                       toChr: parseInt(arr[3].replace('chr','')),
                       toStart: parseInt(arr[4]),
-                      toEnd: parseInt(arr[5])
+                      toEnd: parseInt(arr[5]),
+                      type: arr[6].toLowerCase(),
+                      segmentFrom: "segment"+Math.floor(source_start/chrLen),
+                      segmentTo: "segment"+Math.floor(target_start/chrLen)
                     }
                     obj.class = "red";
                     ribbons[Math.floor(source_start/chrLen)].details.push(obj);
                     var obj2 = JSON.parse(JSON.stringify(obj));
                     obj2.class = "green"
                     ribbons[Math.floor(target_start/chrLen)].details.push(obj2);
+
                   }
                 });
 
@@ -61,6 +71,11 @@ function makeRibbons(){
   // console.log(ribbons);
   return ribbons;
 }
+
+
+//the next part are partly lifted from
+//https://bl.ocks.org/mbostock/7607999
+//only modified for program use
 
  var ribbons = makeRibbons();
     var w = 900,
@@ -74,24 +89,14 @@ function makeRibbons(){
 
     var cluster = d3.layout.cluster()
     .size([360, ry - 120])
-    //.sort(function(a, b) { return d3.ascending(a.key, b.key); });
 
     var bundle = d3.layout.bundle();
 
     var line = d3.svg.line.radial()
     .interpolate("bundle")
-    .tension(.85)
+    .tension(.80)
     .radius(function(d) { return d.y; })
     .angle(function(d) { return d.x / 180 * Math.PI; });
-
-    // Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
-    // var div = d3.select("body").insert("div", "h2")
-    //  .style("top", "140px")
-    //  .style("left", "300px")
-    // //.style("width", w + "px")
-    // //.style("height", w-100 + "px")
-    // .style("position", "absolute")
-    // .style("-webkit-backface-visibility", "hidden");
 
     var svg = d3.select("svg#circularchart_svg").append("svg:svg")
     .attr("top", "140px")
@@ -105,19 +110,34 @@ function makeRibbons(){
     .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
     //.on("mousedown", mousedown);
 
-// d3.json("data/pseudo/tra.json",function(classes){
     var nodes = cluster.nodes(packages.root(ribbons)),
       links = packages.imports(nodes),
       splines = bundle(links);
-    //  console.log(splines);
-    //  console.log("nodes: +"nodes);
-    //  console.log("nodes: +"nodes)
-    //  console.log("nodes: +"nodes)
+      console.log(splines);
     var path = svg.selectAll("path.link")
       .data(links)
       .enter().append("svg:path")
-      .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
-      .attr("d", function(d, i) { return line(splines[i]); });
+      .attr("class", function(d) {
+        var flagDUP=0, flagTRA=0;
+        for(i=0;i<d.source.imports.length;i++){
+          if(d.source.imports[i] == d.target.key){
+            if(d.source.type[i] == "dup"){
+              flagDUP = 1;
+            }
+            else flagTRA = 1;
+          }
+        }
+        var className
+        if(flagDUP == 1 && flagTRA == 1) className = "dup_tra";
+        else if (flagDUP == 1) className = "dup";
+        else if (flagTRA == 1) className = "tra"
+
+        return "link source-" + d.source.key + " target-" + d.target.key +" "+className;
+      })
+      .attr("d", function(d, i) { return line(splines[i]); })
+      .on("mouseover", function(d){
+          this.classed("target", true);
+      });
 
     svg.selectAll("g.node")
       .data(nodes.filter(function(n) { return !n.children; }))
@@ -130,7 +150,7 @@ function makeRibbons(){
       .attr("dy", ".31em")
       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
       .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-      .text(function(d) { return "======"; })
+      .text(function(d) { return "........."; })
       .on("mouseover", mouseover)
       .on("mouseout", mouseout);
 
@@ -138,20 +158,13 @@ function makeRibbons(){
     line.tension(this.value / 100);
     path.attr("d", function(d, i) { return line(splines[i]); });
     });
-  // });
 
-    d3.select(window)
-    .on("mousemove", mousemove)
-    //.on("mouseup", mouseup);
+    // d3.select(window)
+    // .on("mousemove", mousemove)
 
     function mouse(e) {
     return [e.pageX - rx, e.pageY - ry];
     }
-
-    // function mousedown() {
-    // m0 = mouse(d3.event);
-    // d3.event.preventDefault();
-    // }
 
     function mousemove() {
     if (m0) {
@@ -193,20 +206,13 @@ function makeRibbons(){
 
 
     document.getElementById("info").innerHTML = d.key + "</br>Start: " + d.start + "</br>End: "+ d.end;
-    // document.getElementById("to").innerHTML = "Transfer to: </br>";
-    // d.imports.forEach(function(i){
-    //   document.getElementById("to").innerHTML += i + "</br>";
-    // });
 
-    // document.getElementById("from").innerHTML = "Transfer from: </br>"
-    // d.source.forEach(function(s){
-    //   document.getElementById("from").innerHTML += s + "</br>";
-    // });
-
-        $("#detailsTable tr").remove();
+      $("#detailsTable tr").remove();
       d.details.forEach(function(det){
         var tr = document.createElement('tr');
         tr.className = det.class == "red" ? "trred" : "trgreen";
+        var type = document.createElement('td');
+        type.innerHTML = det.type.toUpperCase();
         var ch1 = document.createElement('td');
         ch1.innerHTML = 'Chr'+det.fromChr;
         var s1 = document.createElement('td');
@@ -219,6 +225,7 @@ function makeRibbons(){
         s2.innerHTML =det.toStart;
         var e2 = document.createElement('td');
         e2.innerHTML =det.fromStart;
+        tr.appendChild(type);
         tr.appendChild(ch1);
         tr.appendChild(s1);
         tr.appendChild(e1);

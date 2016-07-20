@@ -10872,13 +10872,28 @@
                         d3.transition(path));
                 tickEnter.append("line");
                 tickEnter.append("text");
+                var chrlens = [43270923,79208173,115621992,151124686,181083120,212331907,242029528,270472550,293485270,316692557,3457136603,373245519];
+
                 var lineEnter = tickEnter.select("line"),
                     lineUpdate = tickUpdate.select("line"),
-                    text = tick.select("text").text(tickFormat),
-                    textEnter = tickEnter.select("text"),
+                    text = tick.select("text").text(tickFormat);
+
+                    text[0].forEach(function(t){
+                        for(i=0;i<chrlens.length;i++){
+                            if(Math.floor(t.__data__-chrlens[i])<0){
+                                t.textContent = "chr"+(i+1)+": "+t.textContent;
+                                if(i!==0) t.textContent = "chr"+(i+1)+": "+Math.round((t.__data__-chrlens[i-1])/1000000*100)/100+"M";
+                                break;
+
+                            }
+                        }
+                    })
+                  
+                var textEnter = tickEnter.select("text"),
                     textUpdate = tickUpdate.select("text"),
                     sign = orient === "top" || orient === "left" ? -1 : 1,
                     x1, x2, y1, y2;
+                   
                 if (orient === "bottom" || orient === "top") {
                     tickTransform = d3_svg_axisX, x1 = "x", y1 = "y", x2 = "x2", y2 = "y2";
                     text.attr("dy", sign < 0 ? "0em" : ".71em").style("text-anchor", "middle");

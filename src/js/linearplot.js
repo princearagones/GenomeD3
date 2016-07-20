@@ -9,6 +9,9 @@ var linearTrackDefaults = {
     dragresize: true
 };
 
+var globalVisStart, globalVisEnd;
+
+
 function genomeTrack(layout,tracks) {
 
     this.tracks = tracks;
@@ -42,6 +45,8 @@ function genomeTrack(layout,tracks) {
     // Start with showing the entire genome unless otherwise stated
     this.visStart = 'undefined' !== typeof layout.initStart ? layout.initStart : 0;
     this.visEnd = 'undefined' !== typeof layout.initEnd ? layout.initEnd : layout.genomesize;
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
 
     this.x = d3.scale.linear()
 //	.domain([0, layout.genomesize])
@@ -50,7 +55,7 @@ function genomeTrack(layout,tracks) {
     this.x1 = d3.scale.linear()
 	.range([0,this.layout.width_without_margins])
 //       	.domain([0, layout.genomesize]);
-       	.domain([this.visStart, this.visEnd]);
+    .domain([this.visStart, this.visEnd]);
     this.y1 = d3.scale.linear()
 	.domain([0,this.numTracks])
 	.range([0,(this.layout.height_without_axis-this.layout.bottom_margin)]);
@@ -144,7 +149,8 @@ function genomeTrack(layout,tracks) {
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
 	.html(function(d) {
-		return "<strong>Count:</strong> <span style='color:red'>" + d.count + "</span>";
+		if('undefined' !== typeof d.count)return "<strong>Count:</strong> <span style='color:red'>" + d.count + "</span>";
+		else return "<strong>Name:</strong> <span style='color:red'>" + d.name + "</span>";
 	    });
 
     this.chart.call(this.tip);
@@ -158,6 +164,7 @@ function genomeTrack(layout,tracks) {
 	.innerTickSize(-this.layout.height)
 	.outerTickSize(0)
 	.tickFormat(d3.format("s"));
+	this.xAxis.chromosomeUse = true;
 
     this.axisContainer.append("g")
 	.attr("class", "xaxislinear")
@@ -341,7 +348,8 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     x1 = this.x1,
     y1 = this.y1;
     var cfg = this.layout;
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     // Because of how the tooltip library binds to the SVG object we have to turn it
     // on or off here rather than in the .on() call, we'll redirect the calls to
     // a dummy do-nothing object if we're not showing tips in this context.
@@ -365,7 +373,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     .each(function (d) { d.width = x1(d.end + 1) - x1(d.start); })
     .attr("width", function(d) {return d.width;})
     .style("fill", function(d) { return fill(d) })
-    .style("fill-opacity", function(d) { return d.count / 2500})
+    .style("fill-opacity", function(d) { return d.count / d.max})
     // Yes we really don't need to set the class here again
     // except to deal with the _zoom class when zooming
     // in and out
@@ -456,9 +464,11 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     .on("click", function(d,i) {
       // console.log(d);
       var path = "http://oryzasnp.org/jbrowse-dev2/"
-      var tail = "&tracks=DNA%2Cmsu7indelsv2&highlight="
+      var tail1 = "&tracks=DNA%2C"
+      var tail2 = "&highlight="
+      var trackName = $("#trackName").val();
       var chr = d.chr > 10 ? d.chr.toString(): '0'+d.chr.toString();
-      window.open(path+'?loc=chr'+chr+'%3A'+d.realStart.toString()+'..'+d.realEnd.toString()+tail);
+      window.open(path+'?loc=chr'+chr+'%3A'+d.realStart.toString()+'..'+d.realEnd.toString()+tail1+trackName+tail2);
 	    if (d3.event.defaultPrevented) return; // click suppressed
 	    if('undefined' !== typeof track.linear_mouseclick) {
 		var fn = window[track.linear_mouseclick];
@@ -472,26 +482,36 @@ genomeTrack.prototype.displayStranded = function(track, i) {
 	    }
 	})
     .on('mouseover', function(d) {
-	    tip.show(d);
-	    if('undefined' !== typeof track.linear_mouseover) {
-		var fn = window[track.linear_mouseover];
-		if('object' ==  typeof fn) {
-		    return fn.mouseover(track.trackName, d, cfg.plotid);
-		} else if('function' == typeof fn) {
-		    return fn(track.trackName, d, cfg.plotid);
-		}
-	    }
+    	$("#detailsTable tr").remove();
+	 	if('undefined' === typeof d.count){
+		    tip.show(d);
+		    if('undefined' !== typeof track.linear_mouseover) {
+			var fn = window[track.linear_mouseover];
+			if('object' ==  typeof fn) {
+			    return fn.mouseover(track.trackName, d, cfg.plotid);
+			} else if('function' == typeof fn) {
+			    return fn(track.trackName, d, cfg.plotid);
+			}
+		    }
+	 	}else{
+	 		document.getElementById("info").innerHTML = "Chromosome: "+d.chr+ "</br>Start:" + d.realStart + "</br>End:" + d.realEnd+ "</br>Count:"+d.count;
+	 	}
 	})
     .on('mouseout', function(d) {
-	    tip.hide(d);
-	    if('undefined' !== typeof track.linear_mouseout) {
-		var fn = window[track.linear_mouseout];
-		if('object' ==  typeof fn) {
-		    return fn.mouseout(track.trackName, d, cfg.plotid);
-		} else if('function' == typeof fn) {
-		    return fn(track.trackName, d, cfg.plotid);
-		}
-	    }
+
+	 	if('undefined' === typeof d.count){
+		    tip.hide(d);
+		    if('undefined' !== typeof track.linear_mouseout) {
+			var fn = window[track.linear_mouseout];
+			if('object' ==  typeof fn) {
+			    return fn.mouseout(track.trackName, d, cfg.plotid);
+			} else if('function' == typeof fn) {
+			    return fn(track.trackName, d, cfg.plotid);
+			}
+		    }
+	 	}else{
+
+	 	}
 	});
 
 	    } else if(d.feature == "terminator") {
@@ -570,7 +590,8 @@ genomeTrack.prototype.displayTrack = function(track, i) {
     x1 = this.x1,
     y1 = this.y1;
     var cfg = this.layout;
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     // Because of how the tooltip library binds to the SVG object we have to turn it
     // on or off here rather than in the .on() call, we'll redirect the calls to
     // a dummy do-nothing object if we're not showing tips in this context.
@@ -756,7 +777,8 @@ genomeTrack.prototype.displayPlotTrack = function(track, i) {
     visEnd = this.visEnd,
     x1 = this.x1,
     y1 = this.y1;
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     if((typeof track.visible == 'undefined') || (track.visible == false)) {
     	return;
     }
@@ -795,7 +817,8 @@ genomeTrack.prototype.displayGapTrack = function(track, i) {
     y1 = this.y1;
     var cfg = this.layout;
     var self = this;
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     // Because of how the tooltip library binds to the SVG object we have to turn it
     // on or off here rather than in the .on() call, we'll redirect the calls to
     // a dummy do-nothing object if we're not showing tips in this context.
@@ -895,7 +918,8 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
     x1 = this.x1,
     y1 = this.y1;
     var cfg = this.layout;
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     if((typeof track.visible !== 'undefined') && (track.visible == false)) {
     	return;
     }
@@ -993,10 +1017,31 @@ genomeTrack.prototype.update = function(startbp, endbp, params) {
 
     this.visStart = startbp;
     this.visEnd = endbp;
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     this.zoom.x(this.x1.domain([startbp,endbp]));
 
+    /*to update iframe*/
+    this.updateFrame();
+
+    console.log( pathSrc + chrSrc + '%3A' + Math.floor(globalVisStart) + '..' + Math.floor(globalVisEnd) + tail1Src + trackRenderSrc + tail2Src);
+    document.getElementById('jbrowse').src = pathSrc + chrSrc + '%3A' + Math.floor(globalVisStart) + '..' + Math.floor(globalVisEnd) + tail1Src + trackRenderSrc + tail2Src;
+
+
     this.redraw();
+}
+
+genomeTrack.prototype.updateFrame = function(){
+	for(i=0;i<chromtracks.items.length;i++){
+    	if(globalVisStart > chromtracks.items[i].end) continue;
+    	else{
+    		chrSrc = i > 9 ? i+1 : "0"+(i+1);
+    		globalVisStart -= chromtracks.items[i].start;
+    		globalVisEnd -= chromtracks.items[i].start;
+    		if(globalVisEnd > chromtracks.items[i].end) globalVisEnd = chromtracks.items[i].end;
+    		break;
+    	}
+    }
 }
 
 genomeTrack.prototype.update_finished = function(startbp, endbp, params) {
@@ -1071,7 +1116,6 @@ genomeTrack.prototype.redraw = function() {
 	    // Do nothing for an unknown track type
 	}
     }
-
     this.axisContainer.select(".xaxislinear").call(this.xAxis);
 
 }
@@ -1102,7 +1146,8 @@ genomeTrack.prototype.rescale = function() {
     var cur_domain = this.x1.domain();
     this.visStart = cur_domain[0];
     this.visEnd = cur_domain[1];
-
+    globalVisStart = this.visStart;
+    globalVisEnd = this.visEnd;
     if('undefined' !== typeof this.callbackObj) {
 	if( Object.prototype.toString.call( this.callbackObj ) === '[object Array]' ) {
 	    for(var obj in this.callbackObj) {

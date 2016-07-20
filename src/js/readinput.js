@@ -1,3 +1,9 @@
+/*
+  Program Description: This program read input from raw files found in data/real
+*/
+
+
+
 var tracks = [];
 
 //readFile("data/real/IRIS_313-15897.DUP", tracks);
@@ -14,7 +20,7 @@ function readFile(file ,tracks){
         {
             if(rawFile.status === 200 || rawFile.status == 0)
             {
-              console.log(tracks.length);
+              //creates a track on each iteration for a track
               var track1 = {
               trackName: "track2",
               visible: true,
@@ -25,6 +31,7 @@ function readFile(file ,tracks){
               featureThreshold: 373245519,
               showTooltip: true
               }
+              //dynamically appending tracks on the circular view
               if(tracks.length == 0){
                 track1.outer_radius = 365;
               }else {
@@ -35,9 +42,8 @@ function readFile(file ,tracks){
 
               var track = [];
                 var allText = rawFile.responseText;
-                //strings[strings.length] = allText;
                 var id = 0;
-                allText.split("\n").forEach(function(data){
+                allText.split("\n").forEach(function(data){ //parsing
                   if(data != ""){
                       id++;
                       var obj = {}
@@ -56,9 +62,11 @@ function readFile(file ,tracks){
                         if(obj.end-obj.start>=100)track.push(obj);
                   }
                 });
+
+                //append tracks to the array of tracks
                 track1.items = track;
                 tracks.push(track1);
-                console.log(tracks);
+
             }
         }
     }

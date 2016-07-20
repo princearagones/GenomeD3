@@ -1,5 +1,5 @@
 var contextMargin = {top: 10, right: 40, bottom: 25, left: 60},
-contextWidth = 440 - contextMargin.left - contextMargin.right,
+contextWidth = screen.width*(0.5) - contextMargin.left - contextMargin.right,
 contextHeight = 100 - contextMargin.top - contextMargin.bottom;
 
 function linearBrush(layout, callbackObj) {

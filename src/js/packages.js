@@ -23,7 +23,6 @@
       classes.forEach(function(d) {
         find(d.name, d);
       });
-
       return map[""];
     },
 

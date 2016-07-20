@@ -171,7 +171,8 @@ function circularTrack(layout,tracks) {
 	.attr('class', 'd3-tip')
 	.offset([-10, 0])
 	.html(function(d) {
-		return "<strong>Count</strong> <span style='color:red'>" + d.count + "</span>";
+		if('undefined' !== typeof d.count)return "<strong>Count</strong> <span style='color:red'>" + d.count + "</span>";
+        else return "<strong>Name</strong> <span style='color:red'>" + d.name + "</span>"
 	    });
 
     this.container.call(this.tip);
@@ -231,13 +232,6 @@ function circularTrack(layout,tracks) {
 
 	this.dragbar_y_mid = this.layout.h/2;
 	this.dragbar = this.container.append("g")
-	    .attr("transform", "translate(" + (this.layout.w+this.layout.ExtraWidthX-25) + "," +  (this.layout.h+this.layout.ExtraWidthY-25) + ")")
-	    .attr("width", 25)
-	    .attr("height", 20)
-	    .attr("fill", "lightblue")
-	    .attr("fill-opacity", .2)
-	    .attr("cursor", "ew-resize")
-	    .call(dragright);
 
 	this.dragbar.append("rect")
 	    .attr("width", 25)
@@ -310,7 +304,7 @@ function circularTrack(layout,tracks) {
     //chromosome label
     var lbl = d3.range(0,cfg.genomesize, cfg.spacing*cfg.legend_spacing);
     var lab = [];
-    tracks[1].items.forEach(function(i){
+    tracks[tracks.length-1].items.forEach(function(i){
       lab.push(i.end);
     });
 
@@ -334,7 +328,6 @@ function circularTrack(layout,tracks) {
             break;
           }
         }
-        console.log(idx);
        var prefix = d3.formatPrefix(d);
        if(num == 0) return null;
 	    return "C"+(idx+1)+" : "+Math.floor(prefix.scale(num)) + prefix.symbol;
@@ -587,7 +580,7 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     .append("path")
     .attr("d", arc)
     .style("fill", function(d) { return fill(d) })
-    .style("fill-opacity", function(d) { return d.count / 2500})
+    .style("fill-opacity", function(d) { return d.count / d.max})
     .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '')+ ('undefined' !== typeof d.extraclass ? d.extraclass : '')+ ('undefined' !== typeof d.type ? ('_'+d.type) : '')})
     .attr("transform", "translate("+cfg.w2+","+cfg.h2+")")
     .on("click", function(d,i) {
@@ -605,7 +598,9 @@ circularTrack.prototype.drawTrack = function(i, animate) {
 	    }
 	})
     .on("mouseover", function(d, i) {
-	    tip.show(d);
+        $("#detailsTable tr").remove();
+	    tip.show(d); 
+        if('undefined' !== typeof d.count)document.getElementById("info").innerHTML = "Chromosome: "+d.chr+ "</br>Start:" + d.realStart + "</br>End:" + d.realEnd+ "</br>Count:"+d.count;
 	    if('undefined' !== typeof track.mouseover_callback) {
 		var fn = window[track.mouseover_callback];
 		if('object' ==  typeof fn) {
@@ -618,6 +613,7 @@ circularTrack.prototype.drawTrack = function(i, animate) {
 	    } else {
 		return null;
 	    }
+
 	})
     .on("mouseout", function(d, i) {
 	    tip.hide(d);
@@ -1055,7 +1051,7 @@ circularTrack.prototype.createBrush = function() {
 	    self.moveBrush(self.brushStart, self.brushEnd);
 	    if('undefined' !== typeof self.callbackObj) {
 		self.doBrushCallback(self.brushStartBP, self.brushEndBP);
-		//		self.callbackObj.update(self.brushStartBP, self.brushEndBP);
+				self.callbackObj.update(self.brushStartBP, self.brushEndBP);
 	    }
 	})
     .on("dragend", function(d) {
@@ -1085,7 +1081,7 @@ circularTrack.prototype.createBrush = function() {
 	    self.moveBrush(self.brushStart, self.brushEnd);
 	    if('undefined' !== typeof self.callbackObj) {
 		self.doBrushCallback(self.brushStartBP, self.brushEndBP);
-		//		self.callbackObj.update(self.brushStartBP, self.brushEndBP);
+				self.callbackObj.update(self.brushStartBP, self.brushEndBP);
 	    }
 	})
     .on("dragend", function(d) {

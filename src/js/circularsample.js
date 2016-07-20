@@ -11,7 +11,7 @@ var track1 = {
 	    trackName: "track2",
 	    visible: true,
 	    trackType: "stranded",
-	    inner_radius: 315,
+	    inner_radius: 335,
 	    outer_radius: 365,
 	    centre_line_stroke: "grey",
 	    showLabels: true,
@@ -20,40 +20,21 @@ var track1 = {
 	    };
 
 var chrlength = [43270923,35937250,	36413819,35502694,29958434,31248787,29697621,28443022,23012720,23207287,29021106,27531856];
-//http://172.29.4.215:8080/jbrowse-dev2/
-var path = 'data/tracks/msu7indelsv2/';
-var td = '/trackData.json';
-var hist = '/hist-100000-0.json';
+//
+
+var resolution = 250000;
 
 
 tracks.push(track1);
+var track2 = JSON.parse(JSON.stringify(track1));
+track2.inner_radius -= 15;
+track2.outer_radius -= 15;
+var track3 = JSON.parse(JSON.stringify(track2));
+track3.inner_radius -= 15;
+track3.outer_radius -= 15;
+tracks.push(track2);
+tracks.push(track3);
 
-// for(i=1;i<=12;i++){
-// 	console.log("ano na ?");
-// 		var chr = i < 10 ? ('chr0'+i.toString()) : ('chr'+i.toString());
-
-// 	 	// d3.json(path+chr+td,function(response){
-//   	// 		max.push(response.histograms.stats[resolution].max);
-// 	  //       chrlength.push(response.intervals.maxEnd);
-// 			// maxlen = Math.max.apply(null,max);
-// 	 	// })
-
-// 	 	d3.json(path+chr+hist,function(response){
-//   			console.log(response);
-//   			for(j=0;j<response.length;j++){
-// 				var obj = {};
-// 				obj.chr = i;
-// 				obj.start = j*100000;
-// 				obj.end = (obj.start+100000) > chrlength[i-1] ? chrlength[i-1] : obj.start+100000;
-// 				obj.count = response[i][j];
-// 				// obj.opacity = obj.count / maxlen;
-// 				obj.strand = 1;
-// 				obj.type = 'DEL';
-// 				// trackish.push(obj);
-// 				tracks[0].items.push(obj);
-// 			}
-// 	 	})
-// }
 id = 0;
 
 var chromtracks = {
@@ -87,52 +68,6 @@ var chromtracks = {
 								 {id: 12, start:345713663, end:373245519, name:"Chromosome 12", strand: -1, type:"Chromosome"}]
 };
 
-		// d3.json("http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/chr01/hist-100000-0.json",function(response){
-  // 			console.log(response);
-  // 			for(j=0;j<response.length;j++){
-		// 		var obj = {};
-		// 		obj.chr = 1;
-		// 		obj.start = j*100000 + chromtracks.items[0].start;
-		// 		obj.id = id;
-		// 		id++;
-		// 		obj.end = (obj.start+100000) > chrlength[0]+chromtracks.items[0].start ? chrlength[0]+chromtracks.items[0].start : obj.start+100000;
-		// 		obj.count = response[j];
-		// 		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
-		// 		// obj.opacity = obj.count / maxlen;
-		// 		obj.strand = 1;
-		// 		obj.type = 'DEL';
-		// 		// trackish.push(obj);
-		// 		tracks[0].items.push(obj);
-		// 	}
-	 // 	});
-
-
-
-	 // 	d3.json("http://172.29.4.215:8080/jbrowse-dev2/data/tracks/msu7indelsv2/chr02/hist-100000-0.json",function(response){
-  // 			console.log(response);
-  // 			for(j=0;j<response.length;j++){
-		// 		var obj = {};
-		// 		obj.chr = 2;
-		// 		obj.start = j*100000+ chromtracks.items[1].start;
-		// 		obj.id = id;
-		// 		id++;
-		// 		obj.end = (obj.start+100000) > chrlength[1]+chromtracks.items[1].start ? chrlength[1]+chromtracks.items[1].start : obj.start+100000;
-		// 		obj.count = response[j];
-		// 		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
-		// 		// obj.opacity = obj.count / maxlen;
-		// 		obj.strand = 1;
-		// 		obj.type = 'DEL';
-		// 		// trackish.push(obj);
-		// 		tracks[0].items.push(obj);
-		// 		 // d3.select("svg#circularchart_svg").remove();
-		// 		 // cTrack = new circularTrack(circularlayout, tracks);
-		// 		 // d3.select("svg#linearchart_svg").remove();
-		// 	 	//  linearTrack = new genomeTrack(linearlayout, tracks);
-		// 		 // d3.select("#brush").remove();
-		// 		 // brush = new linearBrush(contextLayout,linearTrack);
-		// 	}
-	 // 	});
-
 
 var asyncLoop = function(o){
     var i=-1,
@@ -146,84 +81,153 @@ var asyncLoop = function(o){
     loop();//init
 }
 
+var maxchrlen_ins = 0,maxchrlen_del = 0,maxchrlen_inv = 0;
+var trackName = $("#trackName").val();
 
-asyncLoop({
+//this function forces "get" method to be asynchronous
+//this have 2 loops. first loops get the max count of genome in all chromosomes for color opacity
+//the second one, read file from data (local or fomr JBrowse)
+function render(){
+	$(".se-pre-con").fadeIn("slow");
+	maxchrlen_ins = 0,maxchrlen_del = 0,maxchrlen_inv = 0;
+	resolution = $("#res1").is(":checked") === true ? 250000:100000;
+	var trackValue = $("#trackName").val();
+	var insTrackName = "", delTrackName = "", invTrackName = "";
+	for(k=0;k<trackMap.tracks.length;k++){
+		if(trackMap.tracks[k].name == trackValue){
+			insTrackName = trackMap.tracks[k].instrack;
+			delTrackName = trackMap.tracks[k].deltrack;
+			invTrackName = trackMap.tracks[k].invtrack;
+		}
+		console.log(insTrackName,delTrackName,invTrackName)
+	}
+	tracks[0].items = [];
+	tracks[1].items = [];
+	tracks[2].items = [];
+	asyncLoop({
     length : 12,
     functionToLoop : function(loop, i){
-    var path = 'data/tracks/msu7indelsv2/';
+    var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/';
 		var td = '/trackData.json';
-		var hist = '/hist-100000-0.json';
+		var hist = '/hist-'+resolution.toString()+'-0.json';
         setTimeout(function(){
-            // console.log('Iteration ' + i + ' <br>');
-            var chr = i < 9 ? ('chr0'+(i+1).toString()) : ('chr'+(i+1).toString());
-			d3.json(path+chr+hist, function(response){readonebyone(response, (i+1),chr)});
+            var chr = i < 9 ? ('/chr0'+(i+1).toString()) : ('/chr'+(i+1).toString());
+			d3.json(path+insTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"ins")});
+			d3.json(path+delTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"del")});
+			d3.json(path+invTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"inv")});
             loop();
-        },10);
+        },50);
+
+        //console.log(maxchrlen);
     },
     callback : function(){
-        // console.log('All done!');
-        var genomesize = 373245519;
-		var circularlayout = {genomesize: genomesize,
-				      container: "#circularchart",
-				      dblclick: "doubleClick",
-		                      w: 800, h: 800
-		        };
-         // d3.select("svg#circularchart_svg").remove();
-		$.getScript("d3/d3-tip.js", function(){
-			// 	 d3.select("svg#circularchart_svg").remove();
-			// 	 cTrack = new circularTrack(circularlayout, tracks);
-			// 	 if('undefined' !== typeof linearTrack) {
-			// 		    console.log("Attaching linear track");
-			// 		    cTrack.attachBrush(linearTrack);
-			// 		    cTrack.showBrush();
-			// 		}
+    	console.log(maxchrlen_ins,maxchrlen_del,maxchrlen_inv)
+      	asyncLoop({
+		    length : 13,
+		    functionToLoop : function(loop, i){
+		    var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/';
+				var td = '/trackData.json';
+				var hist = '/hist-'+resolution.toString()+'-0.json';
 
-			// 		if('undefined' !== typeof brush) {
-			// 		    console.log("Attaching linear track brush");
-			// 		    cTrack.attachBrush(brush);
-			// 		\\}
-			var cTrack = new circularTrack(circularlayout, tracks);
-			//console.log(cTrack);
+		        setTimeout(function(){
+		            var chr = i < 9 ? ('/chr0'+(i+1).toString()) : ('/chr'+(i+1).toString());
+		            if(i!=12){
+						d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INS",0,maxchrlen_ins)});
+						d3.json(path+delTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",1,maxchrlen_del)});
+						d3.json(path+invTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INV",2,maxchrlen_inv)});
+		            }
+		            loop();
+		        },10);
+		    },
+		    callback : function(){
+		    	//these force updates svg rendered
+		        var genomesize = 373245519;
+				var circularlayout = {genomesize: genomesize,
+						      container: "#circularchart",
+						      dblclick: "doubleClick",
+				                      w: 800, h: 800
+				        };
+				$.getScript("d3/d3-tip.js", function(){
 
-			if('undefined' !== typeof linearTrack) {
-			    console.log("Attaching linear track");
-			    cTrack.attachBrush(linearTrack);
-			    cTrack.showBrush();
-			}
+					var cTrack = new circularTrack(circularlayout, tracks);
 
-			if('undefined' !== typeof brush) {
-			    console.log("Attaching linear track brush");
-			    cTrack.attachBrush(brush);
-			}
-			$.getScript("makeRibbons.js");
-			// 	 // $.getScript("src/js/lineardemo.js");
-			linearTrack.update(0,20000000,null);
-			linearTrack.rescale();
-			linearTrack.displayStranded(tracks[0], 0);
-			});
+					if('undefined' !== typeof linearTrack) {
+					    console.log("Attaching linear track");
+					    cTrack.attachBrush(linearTrack);
+					    cTrack.showBrush();
+					}
+
+					if('undefined' !== typeof brush) {
+					    console.log("Attaching linear track brush");
+					    cTrack.attachBrush(brush);
+					}
+					$.getScript("makeRibbons.js");
+					updateFrame = false;
+					linearTrack.displayStranded(tracks[0], 0);
+					linearTrack.displayStranded(tracks[1], 0);
+					linearTrack.displayStranded(tracks[2], 0);
+					linearTrack.update(100000,200000,null);
+					linearTrack.rescale();
+					linearTrack.update(0,20000000,null);
+					linearTrack.rescale();
+					});
+					document.getElementById('jbrowse').src = pathSrc + chrSrc + '%3A' + globalVisStart + '..' + globalVisEnd + tail1Src + trackRenderSrc + tail2Src;
+					updateFrame = true;
+				     $(".se-pre-con").fadeOut("slow");
+		    }
+		});
     }
 });
+}
 
-function readonebyone(response, i,chr){
-	for(j=0;j<response.length;j++){
-		var obj = {};
-		obj.chr = i;
-		obj.realStart = j*100000;
-		obj.start = obj.realStart+ chromtracks.items[i-1].start;
-		obj.id = id;
-		id++;
-		obj.end = (obj.start+100000) > chrlength[i-1]+chromtracks.items[i-1].start ? chrlength[1]+chromtracks.items[i-1].start : obj.start+100000;
-		obj.realEnd = obj.end - chromtracks.items[i-1].start;
-		obj.count = response[j];
-		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
-		// obj.opacity = obj.count / maxlen;
-		obj.strand = 1;
-		obj.type = 'DEL';
-		// trackish.push(obj);
-		tracks[0].items.push(obj);
+render();
+
+//compares 2 numbers, puts max to maxchrlen
+function findMax(response, i,resolution,type){
+	var idx = 0;
+	//looks for the data for 100000 bins
+	for(j=0;j<response.histograms.stats.length;j++){
+		if('undefined' === typeof response.histograms.stats[j].basesPerBin)continue;
+		if(response.histograms.stats[j].basesPerBin === resolution.toString()){
+			idx = j;
+		}
+	}
+	var count = count > response.histograms.stats[idx].max ? count : response.histograms.stats[idx].max;
+	switch(type){
+		case "ins": maxchrlen_ins = count; break;
+		case "del": maxchrlen_del = count; break;
+		case "inv": maxchrlen_inv = count; break;
 	}
 }
 
+//reads data from JSON
+function readonebyone(response, i,chr, type, idx, count){
+	for(j=0;j<response.length;j++){
+		var obj = {};
+		obj.chr = i;
+		obj.realStart = j*resolution;
+		obj.start = obj.realStart+ chromtracks.items[i-1].start;
+		obj.id = id;
+		id++;
+		obj.end = (obj.start+resolution) > chrlength[i-1]+chromtracks.items[i-1].start ? chrlength[i-1]+chromtracks.items[i-1].start : obj.start+resolution;
+		obj.realEnd = obj.end - chromtracks.items[i-1].start;
+		obj.count = response[j];
+		obj.name = obj.start.toString() + '-' +obj.end.toString()+'\nCount: '+obj.count;
+		obj.strand = 1;
+		obj.type = type; //only for color purposes
+		obj.max = count;
+		tracks[idx].items.push(obj);
+		// var cloneObj = JSON.parse(JSON.stringify(obj));
+		// cloneObj.type= 'INS';
+		// tracks[1].items.push(cloneObj);
+		// cloneObj = JSON.parse(JSON.stringify(obj));
+		// cloneObj.type= 'INV';
+		// tracks[2].items.push(cloneObj);
+	}
+}
+
+
+//sync length to the circle for rad computation
 for(i=0;i<tracks.length-1;i++){
 	tracks[i].items.forEach(function(tr){
 		tr.start += chromtracks.items[tr.chr-1].start;
@@ -234,6 +238,7 @@ for(i=0;i<tracks.length-1;i++){
 
 
 tracks.push(chromtracks);
+
 
 var genomesize = 373245519;
 var circularlayout = {genomesize: genomesize,
