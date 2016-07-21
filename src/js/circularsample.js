@@ -89,6 +89,7 @@ var trackName = $("#trackName").val();
 //the second one, read file from data (local or fomr JBrowse)
 function render(){
 	$(".se-pre-con").fadeIn("slow");
+	document.body.style.cursor='wait';
 	maxchrlen_ins = 0,maxchrlen_del = 0,maxchrlen_inv = 0;
 	resolution = $("#res1").is(":checked") === true ? 250000:100000;
 	var trackValue = $("#trackName").val();
@@ -101,9 +102,16 @@ function render(){
 		}
 		console.log(insTrackName,delTrackName,invTrackName)
 	}
-	tracks[0].items = [];
-	tracks[1].items = [];
-	tracks[2].items = [];
+	for(i=0;i<tracks.length-1;i++){
+		tracks[i].items = [];
+	}
+	var space = 180 / (tracks.length-1)
+	if(addedLayer){
+		for(i=0;i<tracks.length-1;i++){
+			tracks[i].outer_radius = 365 - (i*(space/2));
+			tracks[i].inner_radius = tracks[i].outer_radius - space;
+		}
+	}
 	asyncLoop({
     length : 12,
     functionToLoop : function(loop, i){
@@ -116,7 +124,7 @@ function render(){
 			d3.json(path+delTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"del")});
 			d3.json(path+invTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"inv")});
             loop();
-        },50);
+        },10);
 
         //console.log(maxchrlen);
     },
@@ -135,13 +143,17 @@ function render(){
 						d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INS",0,maxchrlen_ins)});
 						d3.json(path+delTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",1,maxchrlen_del)});
 						d3.json(path+invTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INV",2,maxchrlen_inv)});
+						if(addedLayer){
+							d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",3,maxchrlen_ins)});
+							d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INS",4,maxchrlen_ins)});
+						}
 		            }
 		            loop();
 		        },10);
 		    },
 		    callback : function(){
 		    	//these force updates svg rendered
-		        var genomesize = 373245519;
+		    	var genomesize = 373245519;
 				var circularlayout = {genomesize: genomesize,
 						      container: "#circularchart",
 						      dblclick: "doubleClick",
@@ -150,6 +162,20 @@ function render(){
 				$.getScript("d3/d3-tip.js", function(){
 
 					var cTrack = new circularTrack(circularlayout, tracks);
+					var linearTrack = new genomeTrack(linearlayout, tracks);
+					d3.select("svg.contextTracks").remove();
+					var brush = new linearBrush(contextLayout,linearTrack);
+					
+
+					/* Tell the linear plot about the brush so when the linear
+					   track is updated (via a drag event, etc) it will update
+					   the brush */
+					linearTrack.addBrushCallback(brush);
+
+					/* If we have a circular plot, tell the linear plot
+					   to let it know about updates, this is needed for
+					   the combo demo */
+	
 
 					if('undefined' !== typeof linearTrack) {
 					    console.log("Attaching linear track");
@@ -161,19 +187,28 @@ function render(){
 					    console.log("Attaching linear track brush");
 					    cTrack.attachBrush(brush);
 					}
-					$.getScript("makeRibbons.js");
+					linearTrack.addBrushCallback(cTrack);
+					brush.addBrushCallback(cTrack);
+					appendRibbon();
+					
 					updateFrame = false;
-					linearTrack.displayStranded(tracks[0], 0);
-					linearTrack.displayStranded(tracks[1], 0);
-					linearTrack.displayStranded(tracks[2], 0);
+					// linearTrack.numTracks = linearTrack.countTracks();
+					// for(i=0;i<tracks.length-1;i++){
+					// 	linearTrack.displayStranded(tracks[i], 0);
+					// }
 					linearTrack.update(100000,200000,null);
 					linearTrack.rescale();
 					linearTrack.update(0,20000000,null);
 					linearTrack.rescale();
 					});
+					if(addedLayer){
+					  d3.select('svg#renderedRibbons')
+					  .attr("transform", "translate(0,47)");
+					}
 					document.getElementById('jbrowse').src = pathSrc + chrSrc + '%3A' + globalVisStart + '..' + globalVisEnd + tail1Src + trackRenderSrc + tail2Src;
 					updateFrame = true;
 				     $(".se-pre-con").fadeOut("slow");
+	 					document.body.style.cursor='default';
 		    }
 		});
     }

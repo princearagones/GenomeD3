@@ -85,24 +85,27 @@ function circularTrack(layout,tracks) {
 	.attr("transform", "translate(" + this.layout.TranslateX + "," + this.layout.TranslateY + ")");
 
     // Add the double click functionality, but we needed to define g first
-    this.container.on("dblclick", function(d,i) {
-	    if('undefined' !== typeof this.layout.dblclick) {
-		var node = this.g.node();
-		var curBP = calcRadBPfromXY((d3.mouse(node)[0] - (this.layout.w2)),
-						  -(d3.mouse(node)[1] - (this.layout.h2)),
-						  xScale)[1];
-		var fn = window[this.layout.dblclick];
+ //    this.container.on("dblclick", function(d,i) {
+	//     if('undefined' !== typeof this.layout.dblclick) {
+	// 	var node = this.g.node();
+	// 	var curBP = calcRadBPfromXY((d3.mouse(node)[0] - (this.layout.w2)),
+	// 					  -(d3.mouse(node)[1] - (this.layout.h2)),
+	// 					  xScale)[1];
+	// 	var fn = window[this.layout.dblclick];
+        
+ //        linearTrack.update(curBP-10000000, curBP+10000000,null);
+ //        brush.update(curBP-10000000, curBP+10000000);
+ //        linearTrack.rescale();
+	// 	// if('object' ==  typeof fn) {
+	// 	//     return fn.ondblclick(this.layout.plotid, curBP);
+	// 	// } else if('function' == typeof fn) {
+	// 	//     return fn(this.layout.plotid, curBP);
+	// 	// }
 
-		if('object' ==  typeof fn) {
-		    return fn.ondblclick(this.layout.plotid, curBP);
-		} else if('function' == typeof fn) {
-		    return fn(this.layout.plotid, curBP);
-		}
-
-	    } else {
-		null;
-	    }
-	}.bind(this));
+	//  //    } else {
+	// 	// null;
+	//     }
+	// }.bind(this));
 
     this.defs = this.g.append("defs");
 

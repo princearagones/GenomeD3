@@ -1,6 +1,6 @@
 var linearTrackDefaults = {
     width: 940,
-    height: 600,
+    height: 1000,
     left_margin: 15,
     right_margin: 15,
     bottom_margin: 5,
@@ -362,7 +362,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     //    console.log(visStart, visEnd);
     var visItems = track.items
 
-
+    console.log(i);
     var rects = this.itemRects[i].selectAll("g")
     .data(visItems, function(d) { return d.id; })
 	.attr("transform", function(d,i) {

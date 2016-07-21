@@ -1,99 +1,140 @@
 body {
-  font: 300 36px "Helvetica Neue";
-  height: 640px;
-  margin: 80px 160px 80px 160px;
-  position: relative;
-  width: 960px;
-}
-
-a:link, a:visited {
-  color: #777;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #666;
-}
-
-blockquote {
   margin: 0;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Helvetica;
 }
-
-blockquote:before {
-  content: "â€œ";
+/* This only works with JavaScript,
+if it's not present, don't show loader */
+.se-pre-con {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url(../img/gear_preloader.gif) center no-repeat #fff;
+}
+#addLayer {
   position: absolute;
-  left: -.4em;
+  float: right;
+  top: 100px;
+  right: 10px;
 }
 
-blockquote:after {
-  content: "â€";
+#linearchart {
   position: absolute;
+  top: 950px;
+  left: 10px;
 }
 
-body > ul {
-  margin: 0;
-  padding: 0;
-}
-
-h1 {
-  font-size: 64px;
-}
-
-h1, h2, h3 {
-  font-weight: inherit;
-  margin: 0;
-}
-
-h2, h3 {
-  text-align: right;
-  font-size: inherit;
+#brush {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  top: 800px;
+  left: 1000px;
 }
 
-h2 {
-  font-size: 24px;
+#circularchart {
   position: absolute;
+  top: 0px;
+  left: 125px;
 }
-
-h3 {
-  bottom: -20px;
-  font-size: 18px;
-}
-
-.invert {
-  background: #1f1f1f;
-  color: #dcdccc;
-}
-
-.invert h2, .invert h3 {
-  color: #7f9f7f;
-}
-
-.string, .regexp {
-  color: #f39;
-}
-
-.keyword {
-  color: #00c;
-}
-
-.comment {
-  color: #777;
-  font-style: oblique;
-}
-
-.number {
-  color: #369;
-}
-
-.class, .special {
-  color: #1181B8;
-}
-
-body > svg {
+#jbrowse{
   position: absolute;
-  top: -80px;
-  left: -160px;
+  top: 1200px;
+  left: 20px;
+  width:90%;
+  min-height: 500px;
+}
+path.arc {
+  cursor: move;
+  fill: #fff;
+}
+
+.node {
+  font-size: 10px;
+}
+
+.node:hover {
+  fill: #1f77b4;
+}
+
+.link {
+  fill: none;
+  stroke: #1f77b4;
+  stroke-opacity: .4;
+  pointer-events: none;
+}
+
+.link.tra{
+ /* stroke: orange;*/
+  stroke-dasharray: 10,3;
+}
+
+.link.dup_tra{
+ /* stroke: orange;*/
+  stroke-dasharray: 40,3,10,3;
+  stroke-opacity: .6;
+}
+
+.link.source, .link.target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.node.target {
+  fill: #d62728 !important;
+}
+
+.link.source {
+  stroke: #d62728;
+}
+
+.node.source {
+  fill: #2ca02c;
+}
+
+.link.target {
+  stroke: #2ca02c;
+}
+@media screen and (max-width: 1800px) {
+    #legend, #addLayer, #TRAhover {
+        display: none !important;
+    }
+    #brush {
+      top: 850px;
+      left: 100px;
+      }
+}
+#legend {
+  float:right;
+  top:30px;
+  right:100px;
+  left:auto;
+  margin-right: 20%;
+  margin-top: 2%;
+}
+
+#TRAhover {
+/*background-color: #99ff99;*/
+  position: absolute;
+  min-width: 100px;
+  min-height: 300px;
+  margin-right: 20%;
+  margin-top: 10%;
+  border-style: solid;
+  border-color: green;
+  float: right;
+  right:10px;
+  top: 10px;
+  width: 30%;
+  font-size: 150%;
+}
+#genomeSelect {
+  float:right;
+}
+.trred {
+  background-color: #ff9999;
+}
+.trgreen{
+  background-color: #99ff99;
 }

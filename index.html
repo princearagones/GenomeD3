@@ -6,150 +6,8 @@
     <script src="d3/d3.js"></script>
     <script src="d3/d3-tip.js"></script>
     <script src="src/js/jquery-3.0.0.js"></script>
-
-    <style>
-    body {
-     margin: 0;
-     font-size: 14px;
-     font-family: "Helvetica Neue", Helvetica;
-
-   }
-
-   /* This only works with JavaScript,
-  if it's not present, don't show loader */
-  .se-pre-con {
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    background: url(src/img/Preloader_9.gif) center no-repeat #fff;
-  }
-
-   #linearchart {
-     position: absolute;
-     top: 950px;
-     left: 10px;
-   }
-
-   #brush {
-     position: absolute;
-     top: 800px;
-     left: 1000px;
-   }
-
-   #circularchart {
-     position: absolute;
-     top: 0px;
-     left: 125px;
-   }
-   #jbrowse{
-     position: absolute;
-     top: 1200px;
-     left: 20px;
-     width:90%;
-     min-height: 500px;
-   }
-      path.arc {
-        cursor: move;
-        fill: #fff;
-      }
-
-      .node {
-        font-size: 10px;
-      }
-
-      .node:hover {
-        fill: #1f77b4;
-      }
-
-      .link {
-        fill: none;
-        stroke: #1f77b4;
-        stroke-opacity: .4;
-        pointer-events: none;
-      }
-
-      .link.tra{
-       /* stroke: orange;*/
-        stroke-dasharray: 10,3;
-      }
-
-      .link.dup_tra{
-       /* stroke: orange;*/
-        stroke-dasharray: 40,3,10,3;
-        stroke-opacity: .6;
-      }
-
-      .link.source, .link.target {
-        stroke-opacity: 1;
-        stroke-width: 2px;
-      }
-
-      .node.target {
-        fill: #d62728 !important;
-      }
-
-      .link.source {
-        stroke: #d62728;
-      }
-
-      .node.source {
-        fill: #2ca02c;
-      }
-
-      .link.target {
-        stroke: #2ca02c;
-      }
-      @media screen and (max-width: 1800px) {
-          #TRAhover {
-              display: none !important;
-          }
-          #legend {
-              display: none !important;
-          }
-          #brush {
-            top: 850px;
-            left: 100px;
-            }
-      }
-      #legend {
-        float:right;
-        top:30px;
-        right:100px;
-        left:auto;
-        margin-right: 20%;
-        margin-top: 2%;
-      }
-
-     #TRAhover {
-      /*background-color: #99ff99;*/
-      position: absolute;
-      min-width: 100px;
-      min-height: 300px;
-      margin-right: 20%;
-      margin-top: 10%;
-      border-style: solid;
-      border-color: green;
-      float: right;
-      right:10px;
-      top: 10px;
-      width: 30%;
-      font-size: 150%;
-     }
-     #genomeSelect {
-        float:right;
-     }
-     .trred {
-        background-color: #ff9999;
-     }
-     .trgreen{
-        background-color: #99ff99;
-     }
-
-
-    </style>
+    <script src="src/js/index.js"></script>
+    <link href="src/css/style.css" rel="stylesheet">
     <link href="src/css/tracks.css" rel="stylesheet">
     <!-- <script src="src/js/readinput.js"></script> -->
     <!-- <script src="src/js/readJBrowse.js"></script> -->
@@ -160,8 +18,6 @@
     tail1Src = "&tracks=DNA%2C",
     tail2Src = "&highlight=",
     updateFrame = true;
-
-
     </script>
   </head>
   <body>
@@ -176,11 +32,11 @@
       </div>
       <div id="TRAhover">
       <div id="genomeSelect">
-      Genome Track:
+      Genome Track: 
       <select id="trackName"></select>
       <button onclick="render()"> Render </button>
       </br>
-      Resolution:
+      Resolution: 
       </br>
       <input type="radio" id="res1" name="gender" value="250000" checked> 250000<br>
       <input type="radio" id="res2" name="gender" value="100000"> 100000
@@ -207,7 +63,9 @@
 
         </div>
       </div>
-
+      <div id="addLayer">
+        <button onclick="addLayer()">Add Layer</button>
+      </div>
     </div>
 
     <script src="src/js/config.js"></script>
@@ -224,25 +82,21 @@
           plot demo Gists -->
     <script type="text/javascript" src="src/js/circularsample.js"></script>
     <script type="text/javascript" src="src/js/lineardemo.js"></script>
+    <script type="text/javascript" src="makeRibbons.js"></script>
 
 
     <script type="text/javascript" src="d3/d3.layout.mod.js"></script>
     <script type="text/javascript" src="d3/d3.js"></script>
     <script type="text/javascript" src="src/js/packages.js"></script>
 
-    <script type="text/javascript">
-    </script>
 
-    <!-- Controls on the demo -->
-
-
-   <iframe id="jbrowse"></iframe>
+   <iframe id="jbrowse"></iframe> 
   <script type="text/javascript">
       // Hack to make this example display correctly in an iframe on bl.ocks.org
       d3.select(self.frameElement).style("height", "650px");
-
+      
   </script>
 
-
+   
  </body>
 </html>
