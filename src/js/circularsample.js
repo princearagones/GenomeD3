@@ -91,6 +91,7 @@ function render(){
 	$(".se-pre-con").fadeIn("slow");
 	document.body.style.cursor='wait';
 	maxchrlen_ins = 0,maxchrlen_del = 0,maxchrlen_inv = 0;
+	var maxCounts = [];
 	resolution = $("#res1").is(":checked") === true ? 250000:100000;
 	var trackValue = $("#trackName").val();
 	var insTrackName = "", delTrackName = "", invTrackName = "";
@@ -103,19 +104,20 @@ function render(){
 		console.log(insTrackName,delTrackName,invTrackName)
 	}
 	for(i=0;i<tracks.length-1;i++){
-		tracks[i].items = [];
+		if(tracks[i].trackName == "track2")tracks[i].items = [];
 	}
 	var space = 180 / (tracks.length-1)
 	if(addedLayer){
 		for(i=0;i<tracks.length-1;i++){
 			tracks[i].outer_radius = 365 - (i*(space/2));
 			tracks[i].inner_radius = tracks[i].outer_radius - space;
+			tracks[i].radius = (tracks[i].outer_radius + tracks[i].inner_radius) / 2;
 		}
 	}
 	asyncLoop({
     length : 12,
     functionToLoop : function(loop, i){
-    var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/';
+    var path = 'http://oryzasnp.org/jbrowse-dev2/data/tracks/';
 		var td = '/trackData.json';
 		var hist = '/hist-'+resolution.toString()+'-0.json';
         setTimeout(function(){
@@ -123,17 +125,33 @@ function render(){
 			d3.json(path+insTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"ins")});
 			d3.json(path+delTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"del")});
 			d3.json(path+invTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"inv")});
+			if(addedLayer){
+				// console.log("tracks length is "+tracks.length);
+				// d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",j,maxchrlen_ins)});	
+				// for(var added=3;added <tracks.length-1;added++){
+				// 	console.log(path+trkNames[3-added]+chr+hist);
+				// 	$.ajax({
+	   //                  dataType: "json",
+	   //                  async: false,
+	   //                  url: path+trkNames[3-added]+chr+hist,
+	   //                  type: "GET",
+	   //                  data: {},
+	   //                  success: function(lfData) {
+	   //                      maxCounts.push(findMax(lfData, (i+1),resolution,""));
+	   //                  }
+	   //              });
+				// }
+			}
             loop();
         },10);
 
         //console.log(maxchrlen);
     },
     callback : function(){
-    	console.log(maxchrlen_ins,maxchrlen_del,maxchrlen_inv)
       	asyncLoop({
 		    length : 13,
 		    functionToLoop : function(loop, i){
-		    var path = 'http://172.29.4.215:8080/jbrowse-dev2/data/tracks/';
+		    var path = 'http://oryzasnp.org/jbrowse-dev2/data/tracks/';
 				var td = '/trackData.json';
 				var hist = '/hist-'+resolution.toString()+'-0.json';
 
@@ -144,8 +162,20 @@ function render(){
 						d3.json(path+delTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",1,maxchrlen_del)});
 						d3.json(path+invTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INV",2,maxchrlen_inv)});
 						if(addedLayer){
-							d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",3,maxchrlen_ins)});
-							d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"INS",4,maxchrlen_ins)});
+							// console.log("tracks length is "+tracks.length);
+							// d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",j,maxchrlen_ins)});	
+							for(tn=0;tn < trkNames.length;tn++){
+								$.ajax({
+	                                dataType: "json",
+	                                async: false,
+	                                url: path+trkNames[tn]+chr+td,
+	                                type: "GET",
+	                                data: {},
+	                                success: function(lfData) {
+	                                    readTraits(lfData, (i+1),3,tn);
+	                                }
+	                            });
+							}
 						}
 		            }
 		            loop();
@@ -232,6 +262,7 @@ function findMax(response, i,resolution,type){
 		case "ins": maxchrlen_ins = count; break;
 		case "del": maxchrlen_del = count; break;
 		case "inv": maxchrlen_inv = count; break;
+		dafault: return count;
 	}
 }
 
@@ -251,6 +282,36 @@ function readonebyone(response, i,chr, type, idx, count){
 		obj.strand = 1;
 		obj.type = type; //only for color purposes
 		obj.max = count;
+		tracks[idx].items.push(obj);
+		// var cloneObj = JSON.parse(JSON.stringify(obj));
+		// cloneObj.type= 'INS';
+		// tracks[1].items.push(cloneObj);
+		// cloneObj = JSON.parse(JSON.stringify(obj));
+		// cloneObj.type= 'INV';
+		// tracks[2].items.push(cloneObj);
+	}
+}
+
+function readTraits(response, i,idx, trackName){
+	var trait = response.intervals.nclist;
+	// console.log(response.intervals.nclist);
+	for(j=0;j<trait.length;j++){
+		var obj = {};
+		obj.chr = i;
+		// obj.trackName = trackName.replace("qtarogenes_","");
+		obj.trackName = trackName;
+		obj.realStart = trait[j][1];
+		obj.start = obj.realStart+ chromtracks.items[i-1].start;
+		obj.id = id;
+		id++;
+		obj.realEnd = trait[j][2];
+		obj.end = obj.realEnd+ chromtracks.items[i-1].start
+		// obj.count = response[j];
+		obj.name = trait[j][7]
+		obj.strand = trait[j][3];
+		obj.bp = (obj.start + obj.end) / 2;
+		obj.type = obj.strand == 1 ? "vfdb" : "adb"; //only for color purposes
+		// obj.max = count;
 		tracks[idx].items.push(obj);
 		// var cloneObj = JSON.parse(JSON.stringify(obj));
 		// cloneObj.type= 'INS';

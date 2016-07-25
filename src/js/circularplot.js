@@ -18,6 +18,7 @@ var circularTrackDefaults = {
 }
 
 var hue = d3.scale.category20();
+var hue2 = d3.scale.category20c();
 var luminance = d3.scale.sqrt()
     .domain([0, 1e6])
     .clamp(true)
@@ -34,6 +35,11 @@ function fill(d) {
     //}
     //console.log(d,d.name,c);
     return c;
+}
+
+function colores_google(n) {
+  var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+  return colores_g[n % colores_g.length];
 }
 
 function circularTrack(layout,tracks) {
@@ -587,7 +593,6 @@ circularTrack.prototype.drawTrack = function(i, animate) {
     .attr("class", function(d) { return track.trackName + ('undefined' !== typeof d.strand ? '_' + (d.strand == 1 ? 'pos' : 'neg') : '')+ ('undefined' !== typeof d.extraclass ? d.extraclass : '')+ ('undefined' !== typeof d.type ? ('_'+d.type) : '')})
     .attr("transform", "translate("+cfg.w2+","+cfg.h2+")")
     .on("click", function(d,i) {
-      console.log(d, i);
 	    if('undefined' !== typeof track.mouseclick) {
 		var fn = window[track.mouseclick];
 		if('object' ==  typeof fn) {
@@ -883,10 +888,10 @@ circularTrack.prototype.drawGlyphTrack = function(i) {
     var g = this.g;
     var cfg = this.layout;
     var track = this.tracks[i];
+    console.log(tracks[i]);
     var stack_count = 0;
-
-    var items = track.items.filter(function(d) { return track.visTypes.contains(d.type) } );
-
+    var items = track.items.filter(function(d) { return track.visTypes.contains(d.type)});
+    console.log(items);
     // Because on update the order of processing changes we need
     // to recompute the stacking order manually each time
     for(var i = 0; i < items.length; i++) {
@@ -934,6 +939,7 @@ circularTrack.prototype.drawGlyphTrack = function(i) {
     trackPath.enter()
     .append('path')
     .attr('id', function(d,i) { return track.trackName + "_glyph" + d.id; })
+    .attr('fill', function(d){return colores_google(d.trackName)})
     .attr('class', function(d) {return track.trackName + '_' + d.type + ' ' + track.trackName})
     .attr("d", d3.svg.symbol().type(track.glyphType).size(track.glyphSize))
     .attr("transform", "translate(" + cfg.h2 + "," + cfg.w2 + ")")

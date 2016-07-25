@@ -362,7 +362,7 @@ genomeTrack.prototype.displayStranded = function(track, i) {
     //    console.log(visStart, visEnd);
     var visItems = track.items
 
-    console.log(i);
+    // console.log(i);
     var rects = this.itemRects[i].selectAll("g")
     .data(visItems, function(d) { return d.id; })
 	.attr("transform", function(d,i) {
@@ -966,6 +966,7 @@ genomeTrack.prototype.displayGlyphTrack = function(track, i) {
     .append('path')
     .attr('id', function(d,i) { return track.trackName + "_glyph" + d.id; })
     .attr('class', function(d) {return track.trackName + '_' + d.type + " linear_" + track.trackName + '_' + d.type; })
+    .attr('fill', function(d){return colores_google(d.trackName)})
     .attr("d", d3.svg.symbol().type(track.glyphType).size(track.linear_glyphSize))
     .attr("transform", function(d,i) {  return "translate(" + (x1(d.bp) + track.padding) + ',' + (track.linear_height - (track.linear_glyph_buffer * d.stackCount * track.invert))  + ")"; })
     .on("click", function(d,i) {
@@ -1024,7 +1025,7 @@ genomeTrack.prototype.update = function(startbp, endbp, params) {
     /*to update iframe*/
     this.updateFrame();
 
-    console.log( pathSrc + chrSrc + '%3A' + Math.floor(globalVisStart) + '..' + Math.floor(globalVisEnd) + tail1Src + trackRenderSrc + tail2Src);
+    // console.log( pathSrc + chrSrc + '%3A' + Math.floor(globalVisStart) + '..' + Math.floor(globalVisEnd) + tail1Src + trackRenderSrc + tail2Src);
     document.getElementById('jbrowse').src = pathSrc + chrSrc + '%3A' + Math.floor(globalVisStart) + '..' + Math.floor(globalVisEnd) + tail1Src + trackRenderSrc + tail2Src;
 
 

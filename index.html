@@ -36,10 +36,10 @@
       <select id="trackName"></select>
       <button onclick="render()"> Render </button>
       </br>
-      Resolution: 
+      Bin Size: 
       </br>
-      <input type="radio" id="res1" name="gender" value="250000" checked> 250000<br>
-      <input type="radio" id="res2" name="gender" value="100000"> 100000
+      <input type="radio" id="res1" value="250000" checked> 250K bp<br>
+      <input type="radio" id="res2" value="100000"> 100K bp
       </div>
         <div id="info" > </div>
           <div id="logo" style="float:right;position:relative;" >
@@ -64,7 +64,34 @@
         </div>
       </div>
       <div id="addLayer">
-        <button onclick="addLayer()">Add Layer</button>
+        <input type="checkbox"  value="qtarogenes_bacterial_blight_resistance" > Bacterial blight resistance</br>
+        <input type="checkbox" value="qtarogenes_blast_resistance">   Blast resistance </br>
+        <input type="checkbox" value="qtarogenes_cold_tolerance">   Cold tolerance </br>
+        <input type="checkbox" value="qtarogenes_culm_leaf">   Culm leaf </br>
+        <input type="checkbox" value="qtarogenes_drought_tolerance">   Drought tolerance </br>
+        <input type="checkbox" value="qtarogenes_dwarf">   Dwarf </br>
+        <input type="checkbox" value="qtarogenes_eating_quality">   Eating quality </br>
+        <input type="checkbox" value="qtarogenes_flowering">   Flowering </br>
+        <input type="checkbox" value="qtarogenes_germination_dormancy">   Germination dormancy </br>
+        <input type="checkbox" value="qtarogenes_insect_resistance">   Insect resistance </br>
+        <input type="checkbox" value="qtarogenes_lethality">   Lethality </br>
+        <input type="checkbox" value="qtarogenes_lodging_resistance">   Lodging resistance </br>
+        <input type="checkbox" value="qtarogenes_morphological_trait">   Morphological trait </br>
+        <input type="checkbox" value="qtarogenes_other_soil_stress_tolerance">   Other soil stress tolerance </br>
+        <input type="checkbox" value="qtarogenes_other_stress_resistance">   Other stress resistance </br>
+        <input type="checkbox" value="qtarogenes_others">   Others </br>
+        <input type="checkbox" value="qtarogenes_panicle_flower">   Panicle flower </br>
+        <input type="checkbox" value="qtarogenes_physiological_trait">   Physiological trait </br>
+        <input type="checkbox" value="qtarogenes_resistance_or_tolerance">   Resistance or Tolerance </br>
+        <input type="checkbox" value="qtarogenes_root">   Root </br>
+        <input type="checkbox" value="qtarogenes_salinity_tolerance">   Salinity tolerance </br>
+        <input type="checkbox" value="qtarogenes_seed">   Seed </br>
+        <!-- <input type="checkbox" value="100000">   Sheath blight resistance </br> -->
+        <input type="checkbox" value="qtarogenes_shoot_seedling">   Shoot Seedling </br>
+        <input type="checkbox" value="qtarogenes_source_activity">   Source activity </br>
+        <input type="checkbox" value="qtarogenes_sterility">   Sterility </br>
+        <!-- <input type="checkbox" value="qtarogenes_sterility">   Submergency tolerance </br> -->
+        <button onclick="addLayer()">Add Trait(s)</button>
       </div>
     </div>
 

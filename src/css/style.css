@@ -17,8 +17,8 @@ if it's not present, don't show loader */
 #addLayer {
   position: absolute;
   float: right;
-  top: 100px;
-  right: 10px;
+  top: 10px;
+  right: 100px;
 }
 
 #linearchart {

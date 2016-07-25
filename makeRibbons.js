@@ -210,7 +210,7 @@ function appendRibbon(){
       .each(updateNodes("target", true));
 
 
-    document.getElementById("info").innerHTML = d.key + "</br>Start: " + d.start + "</br>End: "+ d.end;
+    document.getElementById("info").innerHTML = "</br>Start: " + d.start + "</br>End: "+ d.end;
 
       $("#detailsTable tr").remove();
       d.details.forEach(function(det){

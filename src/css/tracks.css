@@ -213,13 +213,13 @@
 
 /* Track 5 is the glyphs, classes of a concatenation
    of the track name and the type of glyph in the track */
-.track5_vfdb {
+/*.track5_vfdb {
     fill: #663300;
 }
 
 .track5_adb {
     fill: #FF9933;
-}
+}*/
 
 /* Give a colour to the glyph track's stroke */
 .gapTrack {
@@ -242,16 +242,16 @@
 
 .brush .extent {
     stroke: gray;
-    fill: dodgerblue;
-    fill-opacity: .365;
+    fill: yellow;
+    fill-opacity: 0.365;
 }
 
 /* In a circular plot if there's a
    drag brush for zoomed region, define the
    colours and style */
 .polarbrush {
-    fill: lightgrey;
-    opacity: 0.5;
+    fill: yellow;
+    opacity: 0.365;
 }
 
 /* In the circular plot, the circular end points
