@@ -115,35 +115,39 @@ function render(){
 		}
 	}
 	asyncLoop({
-    length : 12,
+    length : 13,
     functionToLoop : function(loop, i){
     var path = 'http://oryzasnp.org/jbrowse-dev2/data/tracks/';
 		var td = '/trackData.json';
 		var hist = '/hist-'+resolution.toString()+'-0.json';
         setTimeout(function(){
-            var chr = i < 9 ? ('/chr0'+(i+1).toString()) : ('/chr'+(i+1).toString());
-			d3.json(path+insTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"ins")});
-			d3.json(path+delTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"del")});
-			d3.json(path+invTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"inv")});
-			if(addedLayer){
-				// console.log("tracks length is "+tracks.length);
-				// d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",j,maxchrlen_ins)});	
-				// for(var added=3;added <tracks.length-1;added++){
-				// 	console.log(path+trkNames[3-added]+chr+hist);
-				// 	$.ajax({
-	   //                  dataType: "json",
-	   //                  async: false,
-	   //                  url: path+trkNames[3-added]+chr+hist,
-	   //                  type: "GET",
-	   //                  data: {},
-	   //                  success: function(lfData) {
-	   //                      maxCounts.push(findMax(lfData, (i+1),resolution,""));
-	   //                  }
-	   //              });
-				// }
-			}
+        	if(i == 12) {}
+        	else {
+        		var chr = i < 9 ? ('/chr0'+(i+1).toString()) : ('/chr'+(i+1).toString());
+				d3.json(path+insTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"ins")});
+				d3.json(path+delTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"del")});
+				d3.json(path+invTrackName+chr+td, function(response){findMax(response, (i+1),resolution,"inv")});
+				if(addedLayer){
+					// console.log("tracks length is "+tracks.length);
+					// d3.json(path+insTrackName+chr+hist, function(response){readonebyone(response, (i+1),chr,"DEL",j,maxchrlen_ins)});	
+					// for(var added=3;added <tracks.length-1;added++){
+					// 	console.log(path+trkNames[3-added]+chr+hist);
+					// 	$.ajax({
+		   //                  dataType: "json",
+		   //                  async: false,
+		   //                  url: path+trkNames[3-added]+chr+hist,
+		   //                  type: "GET",
+		   //                  data: {},
+		   //                  success: function(lfData) {
+		   //                      maxCounts.push(findMax(lfData, (i+1),resolution,""));
+		   //                  }
+		   //              });
+					// }
+				}
+        	}	
+          
             loop();
-        },10);
+        },50);
 
         //console.log(maxchrlen);
     },
@@ -179,7 +183,7 @@ function render(){
 						}
 		            }
 		            loop();
-		        },10);
+		        },50);
 		    },
 		    callback : function(){
 		    	//these force updates svg rendered

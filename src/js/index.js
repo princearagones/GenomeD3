@@ -3,6 +3,10 @@ var trkNames = [];
 var newtrack = {}
 
 function addLayer(){
+	if($("#addLayer :checked").length > 3){
+		alert("Rendering problem might occur on multiple traits");
+	}
+
 	if(addedLayer == true){
 		newtrack.items = [];
 		trkNames = [];
@@ -53,13 +57,18 @@ function addLayer(){
 
 
 	}
+
+	
  
   $("#addLayer :checked").each(function(){
   	trkNames.push($(this).val());
   });
+
+
 
   h = 720;
   rx = w / 2 -15;
   ry = h / 2;
   render();
 }
+
