@@ -1,3 +1,5 @@
+
+
 body {
   margin: 0;
   font-size: 14px;
@@ -96,7 +98,7 @@ path.arc {
 .link.target {
   stroke: #2ca02c;
 }
-@media screen and (max-width: 1800px) {
+@media screen and (max-width: 1500px) {
     #legend, #addLayer, #TRAhover {
         display: none !important;
     }
@@ -108,7 +110,7 @@ path.arc {
 #legend {
   float:right;
   top:30px;
-  right:100px;
+  right:90px;
   left:auto;
   margin-right: 20%;
   margin-top: 2%;
@@ -124,7 +126,7 @@ path.arc {
   border-style: solid;
   border-color: green;
   float: right;
-  right:10px;
+  right:5px;
   top: 10px;
   width: 30%;
   font-size: 150%;
