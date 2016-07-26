@@ -27,6 +27,7 @@ if it's not present, don't show loader */
   position: absolute;
   top: 950px;
   left: 10px;
+  min-width: 90%;
 }
 
 #brush {
@@ -112,7 +113,7 @@ path.arc {
   top:30px;
   right:90px;
   left:auto;
-  margin-right: 20%;
+  margin-right: 16%;
   margin-top: 2%;
 }
 
@@ -121,7 +122,7 @@ path.arc {
   position: absolute;
   min-width: 100px;
   min-height: 300px;
-  margin-right: 20%;
+  margin-right: 16%;
   margin-top: 10%;
   border-style: solid;
   border-color: green;
