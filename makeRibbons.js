@@ -9,6 +9,7 @@ function makeRibbons(){
   var value = $("#trackName").val()
   var file= "http://oryzasnp.org/iric-portal-static/tra/"+mappingTRAfile[value];
     //bin creation
+  var indexOfChrTrk = 0;
   for(i=0;i<numOfPoints;i++){
     var ribbon = {};
     ribbon.name = "segment"+i;
@@ -18,6 +19,11 @@ function makeRibbons(){
     ribbon.source=[];
     ribbon.details=[];
     ribbon.type=[];
+    if(chromtracks.items[indexOfChrTrk].end < ribbon.start){
+      if(indexOfChrTrk != 11)indexOfChrTrk++;
+    }
+    ribbon.realStart = ribbon.start - chromtracks.items[indexOfChrTrk].start;
+    ribbon.realEnd = ribbon.end - chromtracks.items[indexOfChrTrk].start;
     ribbons.push(ribbon);
   }
 
@@ -210,7 +216,7 @@ function appendRibbon(){
       .each(updateNodes("target", true));
 
 
-    document.getElementById("info").innerHTML = "</br>Start: " + d.start + "</br>End: "+ d.end;
+    document.getElementById("info").innerHTML = "</br>Start: " + d.realStart + "</br>End: "+ d.realEnd;
 
       $("#detailsTable tr").remove();
       d.details.forEach(function(det){
